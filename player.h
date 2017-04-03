@@ -12,13 +12,17 @@ private:
     QMovie *source;
     int bananas;
     int score;
+    int blockDestroyed;
 
 public:
     explicit Player(QObject *parent = 0);
-    inline int getNbBananas();
+//    Player(); // TO DEFINE for the loading of an previous game
+    int getNbBananas();
     inline int getScore();
+    inline int getNbBlockDestroyed();
     inline void setNbBananas(int nbBananas);
     inline void setScore(int score);
+    inline void setNbBlockDestroyed(int nbBlocks);
     void animation(QMovie * source);
 
 signals:

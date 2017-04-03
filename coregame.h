@@ -19,6 +19,7 @@ private:
 public:
     CoreGame(Model *model, View &view);
     void setupGame();
+    QList<int *> setupLevel();
 };
 
 #endif // COREGAME_H

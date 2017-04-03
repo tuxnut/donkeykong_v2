@@ -4,6 +4,7 @@ Player::Player(QObject *parent) : QObject(parent)
 {
     this->score = 0;
     this->bananas = 1;
+    this->blockDestroyed = 0;
     animation(new QMovie(":/animations/res/anim.gif"));
     setScale(scale() / 4);
 }
@@ -18,6 +19,11 @@ int Player::getScore()
     return this->score;
 }
 
+int Player::getNbBlockDestroyed()
+{
+    return this->blockDestroyed;
+}
+
 void Player::setNbBananas(int nbBananas)
 {
     this->bananas = nbBananas;
@@ -26,6 +32,11 @@ void Player::setNbBananas(int nbBananas)
 void Player::setScore(int score)
 {
     this->score = score;
+}
+
+void Player::setNbBlockDestroyed(int nbBlocks)
+{
+    this->blockDestroyed = nbBlocks;
 }
 
 void Player::animation(QMovie *source)

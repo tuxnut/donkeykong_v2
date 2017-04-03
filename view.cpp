@@ -22,6 +22,7 @@ void View::setControl(CoreGame *control)
 
 void View::displayGame(Player *dk)
 {
+    // setting up the QgraphicsView / Scene
     QGraphicsView * gameView = new QGraphicsView(scene, this);
     gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     gameView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -34,10 +35,28 @@ void View::displayGame(Player *dk)
     scene->addItem(topLine);
     scene->addItem(bottomLine);
 
+    // adding the player
     dk->setPos(PLAYER_POSX, PLAYER_POSY);
+    dk->setFlag(QGraphicsItem::ItemIsFocusable);
+    dk->setFocus();
     scene->addItem(dk);
 
     gameView->show();
+}
+
+void View::displayLevel()
+{
+    QList <int *> blockSettings = this->control->setupLevel();
+
+    if (blockSettings.size() == 0)
+        return;
+//        this->control->updateGame(); // TODO !!
+
+    for (int i = 0; i < blockSettings.size(); i++) {
+        Block * block = new Block(blockSettings[i][0]);
+        block->setPos(blockSettings[i][1], SPAWNING_LINE);
+        scene->addItem(block);
+    }
 }
 
 void View::on_pushButton_clicked()

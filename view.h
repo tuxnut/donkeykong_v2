@@ -12,6 +12,7 @@
 #define TOP_LINE_HEIGHT 50
 #define PLAYER_POSX 275
 #define PLAYER_POSY 700
+#define SPAWNING_LINE 100
 
 class CoreGame;
 
@@ -29,6 +30,7 @@ public:
 
     void setControl(CoreGame *control);
     void displayGame(Player *dk);
+    void displayLevel();
 
 private slots:
     void on_pushButton_clicked();

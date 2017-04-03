@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>res/bck_img_game.png</file>
+    </qresource>
+    <qresource prefix="/animations">
+        <file>res/anim.gif</file>
+    </qresource>
+</RCC>

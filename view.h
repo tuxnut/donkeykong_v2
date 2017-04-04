@@ -1,10 +1,11 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include <QMainWindow>
-#include <QGraphicsView>
 #include "block.h"
 #include "player.h"
+
+#include <QMainWindow>
+#include <QGraphicsView>
 
 #define VIEW_HEIGHT 800
 #define VIEW_WIDTH 600
@@ -27,16 +28,19 @@ class View : public QMainWindow
 public:
     explicit View(QWidget *parent = 0);
     ~View();
-
+    Player * getPlayer();
     void setControl(CoreGame *control);
     void displayGame(Player *dk);
     void displayLevel();
+    void playerAction();
 
 private slots:
     void on_pushButton_clicked();
 
 private:
+    QGraphicsLineItem *playerAxis;
     Ui::View *ui;
+    Player *dk;
     CoreGame *control;
     QGraphicsScene *scene;
 };

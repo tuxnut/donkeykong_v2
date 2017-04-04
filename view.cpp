@@ -17,6 +17,11 @@ View::~View()
     delete ui;
 }
 
+Player *View::getPlayer()
+{
+    return this->dk;
+}
+
 void View::setControl(CoreGame *control)
 {
     this->control = control;
@@ -24,6 +29,11 @@ void View::setControl(CoreGame *control)
 
 void View::displayGame(Player *dk)
 {
+    this->dk = dk;
+
+    playerAxis = new QGraphicsLineItem(this->dk, scene);
+    playerAxis->setVisible(false);
+
     // setting up the QgraphicsView / Scene
     QGraphicsView * gameView = new QGraphicsView(scene, this);
     gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -40,7 +50,7 @@ void View::displayGame(Player *dk)
     // adding the player
     dk->setPos(PLAYER_POSX, PLAYER_POSY);
     dk->setFlag(QGraphicsItem::ItemIsFocusable);
-    dk->setFocus();
+//    dk->setFocus();
     scene->addItem(dk);
 
     gameView->show();
@@ -58,6 +68,14 @@ void View::displayLevel()
         block->setPos(blockSettings[i], SPAWNING_LINE);
         scene->addItem(block);
     }
+}
+
+void View::playerAction()
+{
+    scene->clearFocus();
+    scene->setFocusItem(this->dk);
+    playerAxis->setVisible(true);
+    playerAxis->setLine(0, 0, 100, 100);
 }
 
 void View::on_pushButton_clicked()

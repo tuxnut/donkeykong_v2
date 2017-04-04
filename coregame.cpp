@@ -18,14 +18,13 @@ int CoreGame::randomGenerator(int min, int max)
 
 void CoreGame::setupGame()
 {
-    dk = new Player();
+    Player * dk = new Player();
 
     if (!dk)
         return;
 
     view.displayGame(dk);
-    view.displayLevel();
-//    gameCore(); // TODO !!!
+    gameCore();
 }
 
 int * CoreGame::setupLevel()
@@ -50,12 +49,24 @@ int * CoreGame::setupLevel()
             posXTable.removeAt(posX);
 
             // set the points that the block will have
-            blockSettings[i+1] = randomGenerator(0, this->dk->getNbBananas());
+            blockSettings[i+1] = randomGenerator(1, view.getPlayer()->getNbBananas());
         }
         return blockSettings;
 
     } else
         return NULL;
+
+}
+
+void CoreGame::gameCore()
+{
+    bool gameOn = true;
+    while (gameOn) {
+        view.displayLevel();
+        view.playerAction();
+        qDebug() << "boucle";
+        gameOn = false; // test
+    }
 
 }
 

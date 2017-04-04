@@ -4,6 +4,7 @@
 #include <QGraphicsPixmapItem>
 #include <QObject> // need this for the connect signal / slot
 #include <QMovie>
+#include <QKeyEvent>
 
 class Player : public QObject, public QGraphicsPixmapItem
 {
@@ -20,10 +21,11 @@ public:
     int getNbBananas();
     inline int getScore();
     inline int getNbBlockDestroyed();
-    inline void setNbBananas(int nbBananas);
-    inline void setScore(int score);
-    inline void setNbBlockDestroyed(int nbBlocks);
+    inline void setNbBananas(const int nbBananas);
+    inline void setScore(const int score);
+    inline void setNbBlockDestroyed(const int nbBlocks);
     void animation(QMovie * source);
+    void keyPressEvent(QKeyEvent * event);
 
 signals:
 

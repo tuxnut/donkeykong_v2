@@ -1,0 +1,9 @@
+Spawning des rectangles                             OK
+Collisions avec des vecteurs de direction
+Chargement et savegarde des parties en JSon (visiteurr !)
+Interaction avec claviers (déterminer l'angle de lancer)
+    - dessiner une ligne ?
+Inter niveau
+    - update player
+    - descendre blocks
+    - nouvelle spawning blocks

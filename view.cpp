@@ -2,6 +2,8 @@
 #include "ui_view.h"
 #include "coregame.h"
 
+#include <QDebug>
+
 View::View(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::View)
@@ -46,15 +48,14 @@ void View::displayGame(Player *dk)
 
 void View::displayLevel()
 {
-    QList <int *> blockSettings = this->control->setupLevel();
+    int * blockSettings = this->control->setupLevel();
 
-    if (blockSettings.size() == 0)
+    if (!blockSettings)
         return;
-//        this->control->updateGame(); // TODO !!
 
-    for (int i = 0; i < blockSettings.size(); i++) {
-        Block * block = new Block(blockSettings[i][0]);
-        block->setPos(blockSettings[i][1], SPAWNING_LINE);
+    for (int i = 1; i < 2 * blockSettings[0]; i += 2) {
+        Block * block = new Block(blockSettings[i+1]);
+        block->setPos(blockSettings[i], SPAWNING_LINE);
         scene->addItem(block);
     }
 }

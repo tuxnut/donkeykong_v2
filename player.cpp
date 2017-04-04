@@ -1,6 +1,7 @@
 #include "player.h"
 
 #include <QDebug>
+#include <QGraphicsScene>
 
 Player::Player(QObject *parent) : QObject(parent)
 {
@@ -54,21 +55,23 @@ void Player::animation(QMovie *source)
 
 void Player::keyPressEvent(QKeyEvent * event)
 {
-    qDebug() << event->key();
     switch (event->key()) {
     case Qt::Key_Right:
-        qDebug() << "right";
+        qDebug()<<"1";
+        emit leanRight();
         break;
     case Qt::Key_Left:
-        qDebug() << "left";
+        emit leanLeft();
         break;
-    case Qt::Key_Space:
-        qDebug() << "space";
+    case Qt::Key_Enter:
+        qDebug() << "enter";
         break;
     default:
         break;
     }
 }
+
+/*** SLOTS ***/
 
 void Player::changeFrame()
 {

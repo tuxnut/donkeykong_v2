@@ -27,14 +27,23 @@ void CoreGame::setupGame()
     gameCore();
 }
 
-int * CoreGame::setupLevel()
+int CoreGame::updateNbBananas()
 {
+    // update nb of pixmap bananas to put into the scene
+    if (view.getPlayer()->getNbBananas() != view.getNbPixmapBanana())
+        return view.getPlayer()->getNbBananas() - view.getNbPixmapBanana();
+    else
+        return 0;
+}
+
+int * CoreGame::setupLevel()
+{    
     // nb of blocks we will create on a level (0 to max block on a single block line)
     int nbBlockToCreate = randomGenerator(0, MAX_BLOCKLINE);
 
     if (nbBlockToCreate > 0) {
         QList <int> posXTable;
-        for (int i = 0; i < MAX_BLOCKLINE - 1; i++) {
+        for (int i = 0; i < MAX_BLOCKLINE; i++) {
             posXTable.append(i);
         }
         // each block will have two settings : posX (we already know posY) and the number of bananas to
@@ -60,14 +69,8 @@ int * CoreGame::setupLevel()
 
 void CoreGame::gameCore()
 {
-    bool gameOn = true;
-    while (gameOn) {
-        view.displayLevel();
-        view.playerAction();
-        qDebug() << "boucle";
-        gameOn = false; // test
-    }
-
+    view.displayLevel();
+    view.playerAction();
 }
 
 

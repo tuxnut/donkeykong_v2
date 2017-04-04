@@ -10,6 +10,7 @@ View::View(QWidget *parent) :
 {
     ui->setupUi(this);
     scene = new QGraphicsScene(this);
+    qDebug() << scene->focusItem();
 }
 
 View::~View()
@@ -27,12 +28,14 @@ void View::setControl(CoreGame *control)
     this->control = control;
 }
 
+int View::getNbPixmapBanana()
+{
+    return this->bananas.size();
+}
+
 void View::displayGame(Player *dk)
 {
     this->dk = dk;
-
-    playerAxis = new QGraphicsLineItem(this->dk, scene);
-    playerAxis->setVisible(false);
 
     // setting up the QgraphicsView / Scene
     QGraphicsView * gameView = new QGraphicsView(scene, this);
@@ -41,7 +44,7 @@ void View::displayGame(Player *dk)
     gameView->setFixedSize(VIEW_WIDTH, VIEW_HEIGHT);
     scene->setSceneRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 
-    gameView->setBackgroundBrush(QBrush(QPixmap(":/img/res/bck_img_game.png")));  // image de bckgr dans les ressources !!!!!
+    gameView->setBackgroundBrush(QBrush(QPixmap(":/img/res/bck_img_game.png")));
     QGraphicsLineItem * topLine = new QGraphicsLineItem(0, TOP_LINE_HEIGHT, VIEW_WIDTH, TOP_LINE_HEIGHT);
     QGraphicsLineItem * bottomLine = new QGraphicsLineItem(0, BOTTOM_LINE_HEIGHT, VIEW_WIDTH, BOTTOM_LINE_HEIGHT);
     scene->addItem(topLine);
@@ -50,14 +53,30 @@ void View::displayGame(Player *dk)
     // adding the player
     dk->setPos(PLAYER_POSX, PLAYER_POSY);
     dk->setFlag(QGraphicsItem::ItemIsFocusable);
-//    dk->setFocus();
+    dk->setFocus();
     scene->addItem(dk);
 
+    // connect the signals to the view
+    connect(dk, SIGNAL(leanRight()), this, SLOT(playerAxisLeanRight()));
+    connect(dk, SIGNAL(leanLeft()), this, SLOT(playerAxisLeanLeft()));
+//    connect(dk, SIGNAL(leanLeft()), this, SLOT(playerAxisLeanRight()));
+
+    playerAxis = new QGraphicsLineItem(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY, PLAYER_POSX + PLAYER_SIZE/2, TOP_LINE_HEIGHT);
+    playerAxis->setVisible(false);
+    scene->addItem(playerAxis);
     gameView->show();
+    usleep(1000000);
 }
 
 void View::displayLevel()
 {
+    int bananaToCreate = this->control->updateNbBananas();
+    for (int i = 0; i < bananaToCreate; i++) {
+        bananas.append(new Banana());
+        bananas.at(i)->setPos(this->dk->scenePos());
+        scene->addItem(bananas.at(i));
+    }
+
     int * blockSettings = this->control->setupLevel();
 
     if (!blockSettings)
@@ -73,12 +92,32 @@ void View::displayLevel()
 void View::playerAction()
 {
     scene->clearFocus();
-    scene->setFocusItem(this->dk);
+    qDebug() << dk->hasFocus();
+    scene->setFocusItem(dk);
+    qDebug() << dk->hasFocus();
     playerAxis->setVisible(true);
-    playerAxis->setLine(0, 0, 100, 100);
 }
 
+/*** SLOTS ***/
 void View::on_pushButton_clicked()
 {
     this->control->setupGame();
+}
+
+void View::playerAxisLeanRight()
+{
+    playerAxis->setTransformOriginPoint(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY);
+    if (playerAxis->rotation() > MAX_ROTATION) {
+        playerAxis->setRotation(-MAX_ROTATION);
+    } else
+        playerAxis->setRotation(playerAxis->rotation() + 1);
+}
+
+void View::playerAxisLeanLeft()
+{
+    playerAxis->setTransformOriginPoint(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY);
+    if (playerAxis->rotation() < -MAX_ROTATION) {
+        playerAxis->setRotation(MAX_ROTATION);
+    } else
+        playerAxis->setRotation(playerAxis->rotation() - 1);
 }

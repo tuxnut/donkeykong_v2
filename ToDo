@@ -1,9 +1,12 @@
-Spawning des rectangles                             OK
-Collisions avec des vecteurs de direction
+Spawning des rectangles                                         OK
+Collisions des banaes avec des vecteurs de direction
 Chargement et savegarde des parties en JSon (visiteurr !)
 Interaction avec claviers (déterminer l'angle de lancer)
-    - dessiner une ligne ?
+    - dessiner une ligne                                        OK
+    - bouger droite et gauche                                   OK
+    - lancer
+
 Inter niveau
     - update player
     - descendre blocks
-    - nouvelle spawning blocks
+    - nouvelle spawning blocks                                  OK

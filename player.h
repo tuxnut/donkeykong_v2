@@ -28,6 +28,8 @@ public:
     void keyPressEvent(QKeyEvent * event);
 
 signals:
+    void leanRight();
+    void leanLeft();
 
 public slots:
     void changeFrame();

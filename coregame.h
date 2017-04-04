@@ -23,6 +23,7 @@ public:
     CoreGame(Model *model, View &view);
     int randomGenerator(int min, int max);
     void setupGame();
+    int updateNbBananas();
     int * setupLevel();
     void gameCore();
 };

@@ -30,6 +30,7 @@ public:
 signals:
     void leanRight();
     void leanLeft();
+    void launch();
 
 public slots:
     void changeFrame();

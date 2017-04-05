@@ -8,6 +8,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsView>
+#include <QTimer>
 
 #define VIEW_HEIGHT 800
 #define VIEW_WIDTH 600
@@ -18,6 +19,7 @@
 #define PLAYER_SIZE 50
 #define SPAWNING_LINE 100
 #define MAX_ROTATION 80
+#define FPS 60
 
 class CoreGame;
 class Player;
@@ -45,6 +47,7 @@ private slots:
     void playerAxisLeanLeft();
 
 private:
+    QTimer * refreshTimer;
     QGraphicsLineItem *playerAxis;
     QList <Banana *> bananas;
     Ui::View *ui;

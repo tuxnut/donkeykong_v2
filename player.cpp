@@ -64,7 +64,7 @@ void Player::keyPressEvent(QKeyEvent * event)
         emit leanLeft();
         break;
     case Qt::Key_Enter:
-        qDebug() << "enter";
+        emit launch();
         break;
     default:
         break;

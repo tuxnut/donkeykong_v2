@@ -11,6 +11,7 @@ View::View(QWidget *parent) :
     ui->setupUi(this);
     scene = new QGraphicsScene(this);
     qDebug() << scene->focusItem();
+    refreshTimer = new QTimer();
 }
 
 View::~View()
@@ -59,7 +60,7 @@ void View::displayGame(Player *dk)
     // connect the signals to the view
     connect(dk, SIGNAL(leanRight()), this, SLOT(playerAxisLeanRight()));
     connect(dk, SIGNAL(leanLeft()), this, SLOT(playerAxisLeanLeft()));
-//    connect(dk, SIGNAL(leanLeft()), this, SLOT(playerAxisLeanRight()));
+    connect(dk, SIGNAL(launch()), this, SLOT(playerAxisLeanRight()));
 
     playerAxis = new QGraphicsLineItem(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY, PLAYER_POSX + PLAYER_SIZE/2, TOP_LINE_HEIGHT);
     playerAxis->setVisible(false);
@@ -70,6 +71,7 @@ void View::displayGame(Player *dk)
 
 void View::displayLevel()
 {
+    // update the number of pixmap of bananas
     int bananaToCreate = this->control->updateNbBananas();
     for (int i = 0; i < bananaToCreate; i++) {
         bananas.append(new Banana());
@@ -77,6 +79,7 @@ void View::displayLevel()
         scene->addItem(bananas.at(i));
     }
 
+    // ask the controler what to add to the view
     int * blockSettings = this->control->setupLevel();
 
     if (!blockSettings)

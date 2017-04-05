@@ -1,10 +1,10 @@
 Spawning des rectangles                                         OK
 Collisions des banaes avec des vecteurs de direction
-Chargement et savegarde des parties en JSon (visiteurr !)
+Chargement et savegarde des parties en JSon (visiteur !)
 Interaction avec claviers (déterminer l'angle de lancer)
     - dessiner une ligne                                        OK
     - bouger droite et gauche                                   OK
-    - lancer
+    - lancer                                                    inProgress
 
 Inter niveau
     - update player

@@ -57,7 +57,6 @@ void Player::keyPressEvent(QKeyEvent * event)
 {
     switch (event->key()) {
     case Qt::Key_Right:
-        qDebug()<<"1";
         emit leanRight();
         break;
     case Qt::Key_Left:

@@ -4,16 +4,19 @@
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QVector2D>
+#include <QTimer>
 
 // number of px -> 60fps (0.01667s)
 #define DEFAULT_SPEEDX 0
-#define DEFAULT_SPEEDY -2
+#define DEFAULT_SPEEDY -4
 
 class Banana : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 
 private:
+    bool isThrown;
+//    QTimer * moveTimer;
     QVector2D direction;
 
 public:
@@ -25,6 +28,7 @@ signals:
 
 public slots:
     void move();
+    void throwing();
 
 };
 

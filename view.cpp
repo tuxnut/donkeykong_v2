@@ -60,7 +60,7 @@ void View::displayGame(Player *dk)
     // connect the signals to the view
     connect(dk, SIGNAL(leanRight()), this, SLOT(playerAxisLeanRight()));
     connect(dk, SIGNAL(leanLeft()), this, SLOT(playerAxisLeanLeft()));
-    connect(dk, SIGNAL(launch()), this, SLOT(playerAxisLeanRight()));
+    connect(dk, SIGNAL(launch()), this, SLOT(startPlaying()));
 
     playerAxis = new QGraphicsLineItem(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY, PLAYER_POSX + PLAYER_SIZE/2, TOP_LINE_HEIGHT);
     playerAxis->setVisible(false);
@@ -101,6 +101,29 @@ void View::playerAction()
     playerAxis->setVisible(true);
 }
 
+void View::gamePlaying()
+{
+    // make the axis disappear and retrieve its direction
+    playerAxis->setVisible(false);
+    qreal angle = playerAxis->rotation();
+
+    // computing the direction-vector for the bananas
+    qreal dirRadian = qDegreesToRadians(AXIS_OFFSET - angle);
+    qreal dirX = BANANAS_SPEED * cos(dirRadian);
+    qreal dirY = -BANANAS_SPEED * sin(dirRadian);
+
+    // this timer will throw the bananas every 10th of second
+    QTimer * bananaThrowTimer = new QTimer();
+    bananaThrowTimer->setSingleShot(true);
+
+    // passing the direction to the bananas
+    foreach (Banana * ban, bananas) {
+        ban->setDirection(dirX, dirY);
+        connect(bananaThrowTimer, SIGNAL(timeout()), ban, SLOT(throwing()));
+    }
+    bananaThrowTimer->start(100);
+}
+
 /*** SLOTS ***/
 void View::on_pushButton_clicked()
 {
@@ -123,4 +146,13 @@ void View::playerAxisLeanLeft()
         playerAxis->setRotation(MAX_ROTATION);
     } else
         playerAxis->setRotation(playerAxis->rotation() - 1);
+}
+
+void View::startPlaying()
+{
+    // game is launched, clear focus so the item don't handle the inputs anymore
+    scene->clearFocus();
+
+    // setting up timer and stuff
+    gamePlaying();
 }

@@ -9,6 +9,7 @@
 // number of px -> 60fps (0.01667s)
 #define DEFAULT_SPEEDX 0
 #define DEFAULT_SPEEDY -4
+#define INV_FPS 17      // 1/fps = 1/60 ~= 17ms
 
 class Banana : public QObject, public QGraphicsPixmapItem
 {
@@ -16,7 +17,7 @@ class Banana : public QObject, public QGraphicsPixmapItem
 
 private:
     bool isThrown;
-//    QTimer * moveTimer;
+    QTimer * moveTimer;
     QVector2D direction;
 
 public:
@@ -29,6 +30,7 @@ signals:
 public slots:
     void move();
     void throwing();
+    void crash();
 
 };
 

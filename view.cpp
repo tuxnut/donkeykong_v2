@@ -12,6 +12,8 @@ View::View(QWidget *parent) :
     scene = new QGraphicsScene(this);
     qDebug() << scene->focusItem();
     refreshTimer = new QTimer();
+    connect(this->refreshTimer, SIGNAL(timeout()), this, SLOT(collision()));
+    refreshTimer->setInterval(REFRESH_COLLISION);
 }
 
 View::~View()
@@ -112,16 +114,15 @@ void View::gamePlaying()
     qreal dirX = BANANAS_SPEED * cos(dirRadian);
     qreal dirY = -BANANAS_SPEED * sin(dirRadian);
 
-    // this timer will throw the bananas every 10th of second
-    QTimer * bananaThrowTimer = new QTimer();
-    bananaThrowTimer->setSingleShot(true);
-
     // passing the direction to the bananas
     foreach (Banana * ban, bananas) {
+//        ban->setFlag(QGraphicsItem::ItemIsMovable);
         ban->setDirection(dirX, dirY);
-        connect(bananaThrowTimer, SIGNAL(timeout()), ban, SLOT(throwing()));
+        ban->throwing();
     }
-    bananaThrowTimer->start(100);
+
+    // detect the collision
+    refreshTimer->start();
 }
 
 /*** SLOTS ***/
@@ -155,4 +156,22 @@ void View::startPlaying()
 
     // setting up timer and stuff
     gamePlaying();
+}
+
+void View::collision()
+{
+    // detection of collision with the edges of the playground
+    foreach (Banana * ban, bananas) {
+        if (ban->scenePos().x() + ban->getDirection().x() < 0) {
+            ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+        } else if (ban->scenePos().x() + BANANA_SIZE + ban->getDirection().x() > VIEW_WIDTH) {
+            ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+        } else if (ban->scenePos().y() + ban->getDirection().y() < TOP_LINE_HEIGHT) {
+            ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+        } else if (ban->scenePos().y() + BANANA_SIZE/2 + ban->getDirection().y() > BOTTOM_LINE_HEIGHT) {
+            ban->crash();
+        } else {
+            return;
+        }
+    }
 }

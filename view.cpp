@@ -110,7 +110,7 @@ void View::gamePlaying()
     qreal angle = playerAxis->rotation();
 
     // computing the direction-vector for the bananas
-    qreal dirRadian = qDegreesToRadians(AXIS_OFFSET - angle);
+    qreal dirRadian = (AXIS_OFFSET - angle) * M_PI / 180;
     qreal dirX = BANANAS_SPEED * cos(dirRadian);
     qreal dirY = -BANANAS_SPEED * sin(dirRadian);
 
@@ -170,7 +170,17 @@ void View::collision()
             ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
         } else if (ban->scenePos().y() + BANANA_SIZE/2 + ban->getDirection().y() > BOTTOM_LINE_HEIGHT) {
             ban->crash();
-        } else {
+        } else if (!(ban->collidingItems().isEmpty())) {
+            if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
+                switch (ban->collidingItems().first()->collisionLocation(ban->pos(), ban->getDirection())) {
+                case value:
+
+                    break;
+                default:
+                    break;
+                }
+            }
+
             return;
         }
     }

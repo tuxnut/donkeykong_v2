@@ -17,6 +17,7 @@ public:
     Block(int points);
     inline int getPoints();
     inline void decPoints();
+    inline int collisionLocation(QPointF banana, QVector2D vector);
 
 signals:
 

@@ -9,7 +9,7 @@
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <QTimer>
-#include <QtMath>
+#include <typeinfo>
 
 #define VIEW_HEIGHT 800
 #define VIEW_WIDTH 600

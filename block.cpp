@@ -16,12 +16,11 @@ Block::Block(int points)
     textItem = new QGraphicsSimpleTextItem(QString::number(this->points), this);
 }
 
-int Block::getPoints()
+bool Block::decPoints()
 {
-    return this->points;
-}
-
-void Block::decPoints()
-{
-    this->points--;
+    points--;
+    if (points == 0)
+        return true;
+    else
+        return false;
 }

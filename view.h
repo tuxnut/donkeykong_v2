@@ -23,7 +23,7 @@
 #define MAX_ROTATION 80 // of the axis while rotating
 #define AXIS_OFFSET 90  // since its vertical at the initialization
 #define BANANAS_SPEED 4 // in px per frame (if possible 60 fps)
-#define REFRESH_COLLISION 50
+#define REFRESH_COLLISION 17 // match the FPS
 
 class CoreGame;
 class Player;
@@ -56,12 +56,12 @@ private slots:
 
 private:
     QTimer * refreshTimer;
-    QGraphicsLineItem *playerAxis;
+    QGraphicsLineItem * playerAxis;
     QList <Banana *> bananas;
-    Ui::View *ui;
-    Player *dk;
-    CoreGame *control;
-    QGraphicsScene *scene;
+    Ui::View * ui;
+    Player * dk;
+    CoreGame * control;
+    QGraphicsScene * scene;
 };
 
 #endif // VIEW_H

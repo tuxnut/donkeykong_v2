@@ -15,9 +15,7 @@ private:
 public:
     explicit Block(QObject *parent = 0);
     Block(int points);
-    inline int getPoints();
-    inline void decPoints();
-    inline int collisionLocation(QPointF banana, QVector2D vector);
+    bool decPoints();
 
 signals:
 

@@ -1,6 +1,11 @@
 #include "coregame.h"
 #include <QDebug>
 
+/**
+ * @brief CoreGame::CoreGame : basic constructor, links the controler to the view and the model
+ * @param model Model of the app
+ * @param view View of the app
+ */
 CoreGame::CoreGame(Model *model, View &view) :
     view(view)
 {
@@ -8,6 +13,12 @@ CoreGame::CoreGame(Model *model, View &view) :
     view.setControl(this);
 }
 
+/**
+ * @brief CoreGame::randomGenerator : generates random integer numbers between min and max (included)
+ * @param min : minimum parameter
+ * @param max : maximum parameter
+ * @return
+ */
 int CoreGame::randomGenerator(int min, int max)
 {
     std::random_device rd;
@@ -16,6 +27,9 @@ int CoreGame::randomGenerator(int min, int max)
     return qAbs(dist(mt));
 }
 
+/**
+ * @brief CoreGame::setupGame : launches a new game, with a new Player and starts the 'loop'
+ */
 void CoreGame::setupGame()
 {
     Player * dk = new Player();
@@ -39,7 +53,7 @@ int CoreGame::updateNbBananas()
 int * CoreGame::setupLevel()
 {    
     // nb of blocks we will create on a level (0 to max block on a single block line)
-    int nbBlockToCreate = randomGenerator(0, MAX_BLOCKLINE);
+    int nbBlockToCreate = randomGenerator(1, MAX_BLOCKLINE);
 
     if (nbBlockToCreate > 0) {
         QList <int> posXTable;
@@ -67,6 +81,9 @@ int * CoreGame::setupLevel()
 
 }
 
+/**
+ * @brief CoreGame::gameCore : game loop
+ */
 void CoreGame::gameCore()
 {
     view.displayLevel();

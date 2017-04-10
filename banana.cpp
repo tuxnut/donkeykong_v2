@@ -28,6 +28,11 @@ void Banana::setDirection(const float x, const float y)
     this->direction.setY(y);
 }
 
+const QPointF Banana::getCenter()
+{
+    return QPointF(scenePos().x() + BANANA_SIZE/2, scenePos().y() + BANANA_SIZE/2);
+}
+
 void Banana::move()
 {
     if (isThrown)

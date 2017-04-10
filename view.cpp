@@ -3,6 +3,7 @@
 #include "coregame.h"
 
 #include <QDebug>
+#include <QElapsedTimer>
 
 View::View(QWidget *parent) :
     QMainWindow(parent),
@@ -36,6 +37,10 @@ int View::getNbPixmapBanana()
     return this->bananas.size();
 }
 
+/**
+ * @brief View::displayGame : setups the ingredients for a new game and place the elements in the view (QGraphicsView, QGraphicsLines, Player, ...)
+ * @param dk : the new player instance
+ */
 void View::displayGame(Player *dk)
 {
     this->dk = dk;
@@ -68,9 +73,11 @@ void View::displayGame(Player *dk)
     playerAxis->setVisible(false);
     scene->addItem(playerAxis);
     gameView->show();
-    usleep(1000000);
 }
 
+/**
+ * @brief View::displayLevel : interacts with the controler to display a new level : the ancient block not yet destroyed go down a bit and some are created
+ */
 void View::displayLevel()
 {
     // update the number of pixmap of bananas
@@ -126,6 +133,9 @@ void View::gamePlaying()
 }
 
 /*** SLOTS ***/
+/**
+ * @brief View::on_pushButton_clicked : slot for the "Play" button
+ */
 void View::on_pushButton_clicked()
 {
     this->control->setupGame();
@@ -160,28 +170,46 @@ void View::startPlaying()
 
 void View::collision()
 {
+//    QElapsedTimer timer;
+//    timer.start();
     // detection of collision with the edges of the playground
     foreach (Banana * ban, bananas) {
+        // left edge
         if (ban->scenePos().x() + ban->getDirection().x() < 0) {
             ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
-        } else if (ban->scenePos().x() + BANANA_SIZE + ban->getDirection().x() > VIEW_WIDTH) {
+        } // right edge
+        else if (ban->scenePos().x() + BANANA_SIZE + ban->getDirection().x() > VIEW_WIDTH) {
             ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
-        } else if (ban->scenePos().y() + ban->getDirection().y() < TOP_LINE_HEIGHT) {
+        } // top edge
+        else if (ban->scenePos().y() + ban->getDirection().y() < TOP_LINE_HEIGHT) {
             ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
-        } else if (ban->scenePos().y() + BANANA_SIZE/2 + ban->getDirection().y() > BOTTOM_LINE_HEIGHT) {
+        } // bottom edge
+        else if (ban->scenePos().y() + BANANA_SIZE/2 + ban->getDirection().y() > BOTTOM_LINE_HEIGHT) {
             ban->crash();
-        } else if (!(ban->collidingItems().isEmpty())) {
+        } // block collisions
+        else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
-                switch (ban->collidingItems().first()->collisionLocation(ban->pos(), ban->getDirection())) {
-                case value:
-
-                    break;
-                default:
-                    break;
+                Block * item = dynamic_cast<Block*>(ban->collidingItems().first());
+                // top / bottom block collision
+                if (ban->pos().y() + BANANA_SIZE > item->scenePos().y() + BLOCK_SIZE || ban->pos().y() < item->scenePos().y()) {
+                    ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+                    if (((Block*)item)->decPoints()) {
+                        scene->removeItem(item);
+                        delete item;
+                    }
+                }
+                // right / left block collision
+                else if (ban->pos().x() < item->scenePos().x() || ban->pos().x() + BANANA_SIZE > item->scenePos().x() + BLOCK_SIZE) {
+                    ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+                    if (((Block*)item)->decPoints()) {
+                        scene->removeItem(item);
+                        delete item;
+                    }
                 }
             }
-
-            return;
         }
     }
+//    qDebug()<<timer.nsecsElapsed();
+//     max : 100 microseconds (PC) /
+    return;
 }

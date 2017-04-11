@@ -1,4 +1,5 @@
 #include "banana.h"
+#include <QDebug>
 
 Banana::Banana(QObject *parent) : QObject(parent)
 {
@@ -14,7 +15,7 @@ Banana::Banana(QObject *parent) : QObject(parent)
     // connect timer for moving the banana
     moveTimer = new QTimer();
     moveTimer->setInterval(INV_FPS);
-    connect(moveTimer, SIGNAL(timeout()), this, SLOT(throwing()));
+    connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
 }
 
 const QPointF Banana::getDirection()
@@ -33,6 +34,11 @@ const QPointF Banana::getCenter()
     return QPointF(scenePos().x() + BANANA_SIZE/2, scenePos().y() + BANANA_SIZE/2);
 }
 
+bool Banana::thrownStatus() const
+{
+    return isThrown;
+}
+
 void Banana::move()
 {
     if (isThrown)
@@ -49,6 +55,6 @@ void Banana::throwing()
 
 void Banana::crash()
 {
-//    isThrown = false;
+    isThrown = false;
     moveTimer->stop();
 }

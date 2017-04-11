@@ -1,12 +1,28 @@
 Spawning des rectangles                                         OK
-Collisions des banaes avec des vecteurs de direction
+    - colorier en fonctions des points
+
+Collisions des bananes avec des vecteurs de direction           inProgess
+
 Chargement et savegarde des parties en JSon (visiteur !)
-Interaction avec claviers (déterminer l'angle de lancer)
+
+Animations des mouvements (blocks à l'inter level et player)
+
+
+
+Interaction avec claviers (déterminer l'angle de lancer)        OK
     - dessiner une ligne                                        OK
     - bouger droite et gauche                                   OK
-    - lancer                                                    inProgress
+    - lancer                                                    OK
 
-Inter niveau
-    - update player
-    - descendre blocks
+Inter niveau                                                    OK
+    - update player                                             OK
+    - descendre blocks                                          OK
     - nouvelle spawning blocks                                  OK
+
+Bonus
+    - bananes en plus
+    - bananes rebondissantes sur le bas
+    - raquette pendant une durée
+    - etc ...
+
+CloseEvent saving !!

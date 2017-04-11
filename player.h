@@ -9,6 +9,7 @@
 class Player : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
+
 private:
     QMovie *source;
     int bananas;
@@ -17,13 +18,13 @@ private:
 
 public:
     explicit Player(QObject *parent = 0);
-//    Player(); // TO DEFINE for the loading of an previous game
-    int getNbBananas();
-    inline int getScore();
-    inline int getNbBlockDestroyed();
-    inline void setNbBananas(const int nbBananas);
-    inline void setScore(const int score);
-    inline void setNbBlockDestroyed(const int nbBlocks);
+//    Player(); // TO DEFINE when loading of an previous game
+    int getNbBananas() const;
+    int getScore() const;
+    int getNbBlockDestroyed() const;
+    void setNbBananas(const int nbBananas);
+    void setScore(const int score = 0);
+    void setNbBlockDestroyed(const int nbBlocks = 0);
     void animation(QMovie * source);
     void keyPressEvent(QKeyEvent * event);
 

@@ -12,17 +12,17 @@ Player::Player(QObject *parent) : QObject(parent)
     setScale(scale() / 4);
 }
 
-int Player::getNbBananas()
+int Player::getNbBananas() const
 {
     return this->bananas;
 }
 
-int Player::getScore()
+int Player::getScore() const
 {
     return this->score;
 }
 
-int Player::getNbBlockDestroyed()
+int Player::getNbBlockDestroyed() const
 {
     return this->blockDestroyed;
 }
@@ -34,12 +34,18 @@ void Player::setNbBananas(const int nbBananas)
 
 void Player::setScore(const int score)
 {
-    this->score = score;
+    if (score != 0)
+        this->score = score;
+    else
+        this->score++;
 }
 
 void Player::setNbBlockDestroyed(const int nbBlocks)
 {
-    this->blockDestroyed = nbBlocks;
+    if (nbBlocks != 0)
+        this->blockDestroyed = nbBlocks;
+    else
+        this->blockDestroyed++;
 }
 
 void Player::animation(QMovie *source)
@@ -57,13 +63,13 @@ void Player::keyPressEvent(QKeyEvent * event)
 {
     switch (event->key()) {
     case Qt::Key_Right:
-        emit leanRight();
+        emit leanRight(); // rotate the playerAxis to the right
         break;
     case Qt::Key_Left:
-        emit leanLeft();
+        emit leanLeft(); // rotate the playerAxis to the left
         break;
     case Qt::Key_Enter:
-        emit launch();
+        emit launch(); // calls view.startPlaying() / stops the focus (inputs no longer handled)
         break;
     default:
         break;

@@ -1,5 +1,7 @@
 #include "block.h"
 
+#include <QDebug>
+
 Block::Block(QObject *parent) : QObject(parent)
 {
     // draw the block
@@ -18,6 +20,7 @@ Block::Block(int points)
 
 bool Block::decPoints()
 {
+//    qDebug()<<"yo";
     points--;
     if (points == 0)
         return true;

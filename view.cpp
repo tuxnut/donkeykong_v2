@@ -11,10 +11,18 @@ View::View(QWidget *parent) :
 {
     ui->setupUi(this);
     scene = new QGraphicsScene(this);
-    qDebug() << scene->focusItem();
+    blocks = new QGraphicsItemGroup();
+    scene->addItem(blocks);
+
+    // this will allows to detect collision
     refreshTimer = new QTimer();
-    connect(this->refreshTimer, SIGNAL(timeout()), this, SLOT(collision()));
     refreshTimer->setInterval(REFRESH_COLLISION);
+    connect(this->refreshTimer, SIGNAL(timeout()), this, SLOT(collision()));
+
+    // this will ask the controler whether or not the bananas have all crashed
+    monitoringTimer = new QTimer();
+    monitoringTimer->setInterval(MONITORING_INTERVAL);
+    connect(this->monitoringTimer, SIGNAL(timeout()), this, SLOT(monitorGame()));
 }
 
 View::~View()
@@ -69,7 +77,7 @@ void View::displayGame(Player *dk)
     connect(dk, SIGNAL(leanLeft()), this, SLOT(playerAxisLeanLeft()));
     connect(dk, SIGNAL(launch()), this, SLOT(startPlaying()));
 
-    playerAxis = new QGraphicsLineItem(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY, PLAYER_POSX + PLAYER_SIZE/2, TOP_LINE_HEIGHT);
+    playerAxis = new QGraphicsLineItem();
     playerAxis->setVisible(false);
     scene->addItem(playerAxis);
     gameView->show();
@@ -96,23 +104,25 @@ void View::displayLevel()
 
     for (int i = 1; i < 2 * blockSettings[0]; i += 2) {
         Block * block = new Block(blockSettings[i+1]);
-        block->setPos(blockSettings[i], SPAWNING_LINE);
-        scene->addItem(block);
+        block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
+        blocks->addToGroup(block);
     }
 }
 
+/**
+ * @brief View::playerAction : let the player choose a direction to send the bananas. We change to an asynchronous behavior from here. It's also the player that handles the keyboard inputs.
+ */
 void View::playerAction()
 {
     scene->clearFocus();
-    qDebug() << dk->hasFocus();
     scene->setFocusItem(dk);
-    qDebug() << dk->hasFocus();
+    playerAxis->setLine(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY, dk->pos().x() + PLAYER_SIZE/2, TOP_LINE_HEIGHT);
     playerAxis->setVisible(true);
 }
 
 void View::gamePlaying()
 {
-    // make the axis disappear and retrieve its direction
+    // make the axis disappear and its direction is stored
     playerAxis->setVisible(false);
     qreal angle = playerAxis->rotation();
 
@@ -130,6 +140,45 @@ void View::gamePlaying()
 
     // detect the collision
     refreshTimer->start();
+
+    // detect the end of level
+    monitoringTimer->start();
+}
+
+/**
+ * @brief View::checkLevel : checks if the level was completed perfectly (eg all the block have been destroyed)
+ * @return : true if perfect level, false otherwise
+ */
+bool View::checkPerfectLevel() const
+{
+    foreach (const QGraphicsItem * item, scene->items()) {
+        if (typeid(item) == typeid(Block))
+            return false;
+    }
+    return true;
+}
+
+/**
+ * @brief View::lowerBlocks : get the blocks one step down for the next level
+ * @return  : true if the lowest block is not too low (bottom_line)
+ */
+bool View::lowerBlocks() const
+{
+    for (int i = 0; i < 10; ++i) {
+        qDebug()<<blocks->scenePos();
+        blocks->setPos(blocks->scenePos()+=QPointF(0, 5));
+        qDebug()<<blocks->scenePos();
+        usleep(100000);
+    }
+    return true;
+}
+
+void View::repositionPlayer()
+{
+    for (int i = 0; i < bananas.size(); ++i) {
+        bananas[i]->setPos(bananas.first()->scenePos().x(), PLAYER_POSY + PLAYER_SIZE/2);
+    }
+    dk->setPos(bananas.first()->scenePos().x(), dk->pos().y());
 }
 
 /*** SLOTS ***/
@@ -143,7 +192,7 @@ void View::on_pushButton_clicked()
 
 void View::playerAxisLeanRight()
 {
-    playerAxis->setTransformOriginPoint(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY);
+    playerAxis->setTransformOriginPoint(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY);
     if (playerAxis->rotation() > MAX_ROTATION) {
         playerAxis->setRotation(-MAX_ROTATION);
     } else
@@ -152,7 +201,7 @@ void View::playerAxisLeanRight()
 
 void View::playerAxisLeanLeft()
 {
-    playerAxis->setTransformOriginPoint(PLAYER_POSX + PLAYER_SIZE/2, PLAYER_POSY);
+    playerAxis->setTransformOriginPoint(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY);
     if (playerAxis->rotation() < -MAX_ROTATION) {
         playerAxis->setRotation(MAX_ROTATION);
     } else
@@ -161,10 +210,10 @@ void View::playerAxisLeanLeft()
 
 void View::startPlaying()
 {
-    // game is launched, clear focus so the item don't handle the inputs anymore
+    // level is launched, clear focus so the item don't handle the inputs anymore
     scene->clearFocus();
 
-    // setting up timer and stuff
+    // the bananas are thrown
     gamePlaying();
 }
 
@@ -189,21 +238,25 @@ void View::collision()
         } // block collisions
         else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
-                Block * item = dynamic_cast<Block*>(ban->collidingItems().first());
+                Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
                 // top / bottom block collision
-                if (ban->pos().y() + BANANA_SIZE > item->scenePos().y() + BLOCK_SIZE || ban->pos().y() < item->scenePos().y()) {
+                if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
                     ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
-                    if (((Block*)item)->decPoints()) {
-                        scene->removeItem(item);
-                        delete item;
+                    if (brik->decPoints()) {
+                        blocks->removeFromGroup(brik);
+                        scene->removeItem(brik);
+                        delete brik;
+                        dk->setNbBlockDestroyed(0);
                     }
                 }
                 // right / left block collision
-                else if (ban->pos().x() < item->scenePos().x() || ban->pos().x() + BANANA_SIZE > item->scenePos().x() + BLOCK_SIZE) {
+                else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
                     ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
-                    if (((Block*)item)->decPoints()) {
-                        scene->removeItem(item);
-                        delete item;
+                    if (brik->decPoints()) {
+                        blocks->removeFromGroup(brik);
+                        scene->removeItem(brik);
+                        delete brik;
+                        dk->setNbBlockDestroyed(0);
                     }
                 }
             }
@@ -212,4 +265,19 @@ void View::collision()
 //    qDebug()<<timer.nsecsElapsed();
 //     max : 100 microseconds (PC) /
     return;
+}
+
+void View::monitorGame()
+{
+    // false = game continues   -   true = all the bananas crashed
+    if (this->control->monitorGame(bananas)) {
+        monitoringTimer->stop();
+        refreshTimer->stop();
+        this->control->gameCore();
+    }
+}
+
+void View::on_pushButton_4_clicked()
+{
+    this->close();
 }

@@ -8,6 +8,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsView>
+#include <QGraphicsItemGroup>
 #include <QTimer>
 #include <typeinfo>
 
@@ -19,11 +20,11 @@
 #define PLAYER_POSY 700
 #define PLAYER_SIZE 50
 #define BANANA_SIZE 20
-#define SPAWNING_LINE 100
 #define MAX_ROTATION 80 // of the axis while rotating
 #define AXIS_OFFSET 90  // since its vertical at the initialization
 #define BANANAS_SPEED 4 // in px per frame (if possible 60 fps)
 #define REFRESH_COLLISION 17 // match the FPS
+#define MONITORING_INTERVAL 150
 
 class CoreGame;
 class Player;
@@ -46,6 +47,9 @@ public:
     void displayLevel();
     void playerAction();
     void gamePlaying();
+    bool checkPerfectLevel() const;
+    bool lowerBlocks() const;
+    void repositionPlayer();
 
 private slots:
     void on_pushButton_clicked();
@@ -53,9 +57,13 @@ private slots:
     void playerAxisLeanLeft();
     void startPlaying();
     void collision();
+    void monitorGame();
+    void on_pushButton_4_clicked();
 
 private:
+    QGraphicsItemGroup * blocks;
     QTimer * refreshTimer;
+    QTimer * monitoringTimer;
     QGraphicsLineItem * playerAxis;
     QList <Banana *> bananas;
     Ui::View * ui;

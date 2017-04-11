@@ -26,6 +26,7 @@ public:
     const QPointF getDirection();
     void setDirection(const float x, const float y);
     const QPointF getCenter();
+    bool thrownStatus() const;
 
 signals:
 

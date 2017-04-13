@@ -59,12 +59,28 @@ void View::displayGame(Player *dk)
     gameView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     gameView->setFixedSize(VIEW_WIDTH, VIEW_HEIGHT);
     scene->setSceneRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
-
     gameView->setBackgroundBrush(QBrush(QPixmap(":/img/res/bck_img_game.png")));
+
     QGraphicsLineItem * topLine = new QGraphicsLineItem(0, TOP_LINE_HEIGHT, VIEW_WIDTH, TOP_LINE_HEIGHT);
     QGraphicsLineItem * bottomLine = new QGraphicsLineItem(0, BOTTOM_LINE_HEIGHT, VIEW_WIDTH, BOTTOM_LINE_HEIGHT);
     scene->addItem(topLine);
     scene->addItem(bottomLine);
+
+    scoreItem = new QGraphicsTextItem("Score : " + QString::number(dk->getScore()));
+//    scoreItem->setFont();
+//    scoreItem->setDefaultTextColor();
+//    scoreItem->setPos();
+    blockDestrItem = new QGraphicsTextItem("Nombre de Blocks Détruits : " + QString::number(dk->getNbBlockDestroyed()));
+//    scoreItem->setFont();
+//    scoreItem->setDefaultTextColor();
+    blockDestrItem->setPos(BLOCK_DESTR_POSX, 0);
+    bananaItem = new QGraphicsTextItem("Bananes : " + QString::number(dk->getNbBananas()));
+//    scoreItem->setFont();
+//    scoreItem->setDefaultTextColor();
+    bananaItem->setPos(0, BOTTOM_LINE_HEIGHT + 5);
+    scene->addItem(scoreItem);
+    scene->addItem(blockDestrItem);
+    scene->addItem(bananaItem);
 
     // adding the player
     dk->setPos(PLAYER_POSX, PLAYER_POSY);
@@ -104,7 +120,12 @@ void View::displayLevel()
 
     for (int i = 1; i < 2 * blockSettings[0]; i += 2) {
         Block * block = new Block(blockSettings[i+1]);
-        block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
+        if (control->randomGenerator(0, 100) > 90) {
+            block->setBonus(1);
+            block->setPos(blockSettings[i] + BLOCK_SIZE/4, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+        } else
+            block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
+
         blocks->addToGroup(block);
     }
 }
@@ -165,10 +186,7 @@ bool View::checkPerfectLevel() const
 bool View::lowerBlocks() const
 {
     for (int i = 0; i < 10; ++i) {
-        qDebug()<<blocks->scenePos();
         blocks->setPos(blocks->scenePos()+=QPointF(0, 5));
-        qDebug()<<blocks->scenePos();
-        usleep(100000);
     }
     return true;
 }
@@ -179,6 +197,21 @@ void View::repositionPlayer()
         bananas[i]->setPos(bananas.first()->scenePos().x(), PLAYER_POSY + PLAYER_SIZE/2);
     }
     dk->setPos(bananas.first()->scenePos().x(), dk->pos().y());
+}
+
+void View::incScoreBoard()
+{
+    scoreItem->setPlainText("Score : " + QString::number(dk->getScore()));
+}
+
+void View::incNbBlockDestrBoard()
+{
+    blockDestrItem->setPlainText("Nombre de Blocks Détruits : " + QString::number(dk->getNbBlockDestroyed()));
+}
+
+void View::incNbBananasBoard()
+{
+    bananaItem->setPlainText("Bananes : " + QString::number(dk->getNbBananas()));
 }
 
 /*** SLOTS ***/
@@ -217,6 +250,13 @@ void View::startPlaying()
     gamePlaying();
 }
 
+/**
+ * @brief View::collision : this is where it gets ugly. So many 'if'
+ * Basically we first check the position of the bananas and the edges of the scene - that's easy
+ * Then we check with the block positions :
+ *      - if the block is a bonus block, get the bonus then continues with the same direction
+ *      - otherwise we check if the banana collides with the top/bottom sides or the left/right sides
+ */
 void View::collision()
 {
 //    QElapsedTimer timer;
@@ -239,24 +279,39 @@ void View::collision()
         else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
                 Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
-                // top / bottom block collision
-                if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
-                    ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
-                    if (brik->decPoints()) {
+                if (brik->getBonusType() != 0) {
+                    switch (brik->getBonusType()) {
+                    case MORE_BANANA_BONUS:
+                        dk->setNbBananas();
                         blocks->removeFromGroup(brik);
                         scene->removeItem(brik);
                         delete brik;
-                        dk->setNbBlockDestroyed(0);
+                        break;
+                    default:
+                        break;
                     }
-                }
-                // right / left block collision
-                else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
-                    ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
-                    if (brik->decPoints()) {
-                        blocks->removeFromGroup(brik);
-                        scene->removeItem(brik);
-                        delete brik;
-                        dk->setNbBlockDestroyed(0);
+                } else {
+                    // top / bottom block collision
+                    if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
+                        ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+                        if (brik->decPoints()) {
+                            blocks->removeFromGroup(brik);
+                            scene->removeItem(brik);
+                            delete brik;
+                            dk->setNbBlockDestroyed(0);
+                            incNbBlockDestrBoard();
+                        }
+                    }
+                    // right / left block collision
+                    else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
+                        ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+                        if (brik->decPoints()) {
+                            blocks->removeFromGroup(brik);
+                            scene->removeItem(brik);
+                            delete brik;
+                            dk->setNbBlockDestroyed(0);
+                            incNbBlockDestrBoard();
+                        }
                     }
                 }
             }

@@ -7,7 +7,7 @@ Chargement et savegarde des parties en JSon (visiteur !)
 
 Animations des mouvements (blocks à l'inter level et player)
 
-
+Affichage des scores                                            inProgress
 
 Interaction avec claviers (déterminer l'angle de lancer)        OK
     - dessiner une ligne                                        OK

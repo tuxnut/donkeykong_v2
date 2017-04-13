@@ -29,7 +29,10 @@ int Player::getNbBlockDestroyed() const
 
 void Player::setNbBananas(const int nbBananas)
 {
-    this->bananas = nbBananas;
+    if (nbBananas != 0)
+        this->bananas = nbBananas;
+    else
+        this->bananas++;
 }
 
 void Player::setScore(const int score)

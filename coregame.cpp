@@ -105,6 +105,7 @@ void CoreGame::gameCore()
     view.displayLevel();
     if (view.lowerBlocks()) {
         dk->setScore();
+        view.incScoreBoard();
         view.playerAction();
     } else {
         /* game lost */

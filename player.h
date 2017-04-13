@@ -22,7 +22,7 @@ public:
     int getNbBananas() const;
     int getScore() const;
     int getNbBlockDestroyed() const;
-    void setNbBananas(const int nbBananas);
+    void setNbBananas(const int nbBananas = 0);
     void setScore(const int score = 0);
     void setNbBlockDestroyed(const int nbBlocks = 0);
     void animation(QMovie * source);

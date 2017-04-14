@@ -1,6 +1,8 @@
 #ifndef BANANA_H
 #define BANANA_H
 
+
+#include "unistd.h"
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QVector2D>

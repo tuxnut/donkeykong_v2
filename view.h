@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <typeinfo>
 
+/*** Basically game settings ***/
 #define VIEW_HEIGHT 800
 #define VIEW_WIDTH 600
 #define BOTTOM_LINE_HEIGHT 750
@@ -26,6 +27,7 @@
 #define BANANAS_SPEED 4 // in px per frame (if possible 60 fps)
 #define REFRESH_COLLISION 17 // match the FPS
 #define MONITORING_INTERVAL 150
+#define THROWING_INTERVAL 200
 #define MORE_BANANA_BONUS 1
 #define PADDLE_BONUS 2
 #define MORE_LIFE_BANANA_BONUS 3
@@ -65,9 +67,12 @@ private slots:
     void startPlaying();
     void collision();
     void monitorGame();
+    void thrower();
     void on_pushButton_4_clicked();
 
 private:
+    bool bananaLauncherFlag;
+    int indexOfBananaThrower;
     QTimer * refreshTimer;
     QTimer * monitoringTimer;
     QGraphicsScene * scene;

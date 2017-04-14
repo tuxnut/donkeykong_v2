@@ -5,6 +5,10 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
+/**
+ * @brief View::View : constructor, setting things up here (the QGraphicsScene and some QTimers)
+ * @param parent
+ */
 View::View(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::View)
@@ -30,16 +34,28 @@ View::~View()
     delete ui;
 }
 
+/**
+ * @brief View::getPlayer : getter for the player. May be useless since the controler knows it too ...
+ * @return  : current instance of player
+ */
 Player *View::getPlayer()
 {
     return this->dk;
 }
 
+/**
+ * @brief View::setControl : so the controler and the view get to know each other
+ * @param control
+ */
 void View::setControl(CoreGame *control)
 {
     this->control = control;
 }
 
+/**
+ * @brief View::getNbPixmapBanana : getter for the size of the QList<Banana *> that are actually QGraphicsPixmapItems
+ * @return  : return the size of the list
+ */
 int View::getNbPixmapBanana()
 {
     return this->bananas.size();
@@ -108,7 +124,7 @@ void View::displayLevel()
     int bananaToCreate = this->control->updateNbBananas();
     for (int i = 0; i < bananaToCreate; i++) {
         bananas.append(new Banana());
-        bananas.at(i)->setPos(this->dk->scenePos());
+        bananas.at(i)->setPos(PLAYER_POSX + PLAYER_SIZE/4, PLAYER_POSY);
         scene->addItem(bananas.at(i));
     }
 
@@ -141,6 +157,10 @@ void View::playerAction()
     playerAxis->setVisible(true);
 }
 
+/**
+ * @brief View::gamePlaying : the player has hit the 'enter' key. The bananas are thrown one by one with the direction that the player chose
+ * We also start the QTimer that monitors the game (and it asks that with the controler) and that detects collisions
+ */
 void View::gamePlaying()
 {
     // make the axis disappear and its direction is stored
@@ -154,10 +174,20 @@ void View::gamePlaying()
 
     // passing the direction to the bananas
     foreach (Banana * ban, bananas) {
-//        ban->setFlag(QGraphicsItem::ItemIsMovable);
         ban->setDirection(dirX, dirY);
-        ban->throwing();
     }
+
+    // throwing them
+    bananaLauncherFlag = true;
+    if (bananas.size() >= 1) {
+        indexOfBananaThrower = 1;
+        QTimer * launcher = new QTimer();
+        connect(launcher, SIGNAL(timeout()), this, SLOT(thrower()));
+        launcher->start(THROWING_INTERVAL);
+    }
+    bananas.first()->throwing();
+
+
 
     // detect the collision
     refreshTimer->start();
@@ -191,30 +221,42 @@ bool View::lowerBlocks() const
     return true;
 }
 
+/**
+ * @brief View::repositionPlayer : the new point for the player will be where the first banana of the list hit the floor (not necessarly the first one to actually do that but eh ...)
+ */
 void View::repositionPlayer()
 {
     for (int i = 0; i < bananas.size(); ++i) {
-        bananas[i]->setPos(bananas.first()->scenePos().x(), PLAYER_POSY + PLAYER_SIZE/2);
+        bananas[i]->setPos(bananas.first()->scenePos().x(), PLAYER_POSY);
     }
-    dk->setPos(bananas.first()->scenePos().x(), dk->pos().y());
+    dk->setPos(bananas.first()->scenePos().x() - PLAYER_SIZE/4, PLAYER_POSY);
 }
 
+/**
+ * @brief View::incScoreBoard : update the score board
+ */
 void View::incScoreBoard()
 {
     scoreItem->setPlainText("Score : " + QString::number(dk->getScore()));
 }
 
+/**
+ * @brief View::incNbBlockDestrBoard : update the number of block destroyed
+ */
 void View::incNbBlockDestrBoard()
 {
     blockDestrItem->setPlainText("Nombre de Blocks Détruits : " + QString::number(dk->getNbBlockDestroyed()));
 }
 
+/**
+ * @brief View::incNbBananasBoard : update the number of bananas that the player can dispose of
+ */
 void View::incNbBananasBoard()
 {
     bananaItem->setPlainText("Bananes : " + QString::number(dk->getNbBananas()));
 }
 
-/*** SLOTS ***/
+//////*** SLOTS ***//////
 /**
  * @brief View::on_pushButton_clicked : slot for the "Play" button
  */
@@ -223,6 +265,9 @@ void View::on_pushButton_clicked()
     this->control->setupGame();
 }
 
+/**
+ * @brief View::playerAxisLeanRight : rotate the axis by one degree clockwise
+ */
 void View::playerAxisLeanRight()
 {
     playerAxis->setTransformOriginPoint(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY);
@@ -232,6 +277,9 @@ void View::playerAxisLeanRight()
         playerAxis->setRotation(playerAxis->rotation() + 1);
 }
 
+/**
+ * @brief View::playerAxisLeanLeft : rotate the axis by one degree anti-clockwise
+ */
 void View::playerAxisLeanLeft()
 {
     playerAxis->setTransformOriginPoint(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY);
@@ -241,6 +289,9 @@ void View::playerAxisLeanLeft()
         playerAxis->setRotation(playerAxis->rotation() - 1);
 }
 
+/**
+ * @brief View::startPlaying : start  the level
+ */
 void View::startPlaying()
 {
     // level is launched, clear focus so the item don't handle the inputs anymore
@@ -322,6 +373,9 @@ void View::collision()
     return;
 }
 
+/**
+ * @brief View::monitorGame : asks the controler whether all the bananas have crashed to detect end of level
+ */
 void View::monitorGame()
 {
     // false = game continues   -   true = all the bananas crashed
@@ -332,6 +386,26 @@ void View::monitorGame()
     }
 }
 
+/**
+ * @brief View::thrower : throws one bananas every THROWING_INTERVAL milliseconds
+ */
+void View::thrower()
+{
+    if (bananaLauncherFlag) {
+        bananas[indexOfBananaThrower]->throwing();
+        indexOfBananaThrower++;
+        if (indexOfBananaThrower >= bananas.size()) {
+            bananaLauncherFlag = false;
+            QTimer * timerSender = qobject_cast<QTimer *>(sender());
+            if (timerSender)
+                timerSender->stop();
+        }
+    }
+}
+
+/**
+ * @brief View::on_pushButton_4_clicked : close the game
+ */
 void View::on_pushButton_4_clicked()
 {
     this->close();

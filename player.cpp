@@ -6,7 +6,7 @@
 Player::Player(QObject *parent) : QObject(parent)
 {
     this->score = 0;
-    this->bananas = 1;
+    this->bananas = BANANAS_DEFAULT;
     this->blockDestroyed = 0;
     animation(new QMovie(":/animations/res/anim.gif"));
     setScale(scale() / 4);

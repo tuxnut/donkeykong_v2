@@ -6,6 +6,8 @@
 #include <QMovie>
 #include <QKeyEvent>
 
+#define BANANAS_DEFAULT 2;
+
 class Player : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT

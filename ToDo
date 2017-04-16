@@ -1,9 +1,12 @@
 Spawning des rectangles                                         OK
     - colorier en fonctions des points
 
-Collisions des bananes avec des vecteurs de direction           inProgess
+Collisions des bananes avec des vecteurs de direction           OK
 
-Chargement et savegarde des parties en JSon (visiteur !)
+Chargement et savegarde des parties en JSon (visiteur !)        OK
+
+Meilleurs Scores
+    - nom des players ?
 
 Animations des mouvements (blocks à l'inter level et player)
 
@@ -19,10 +22,10 @@ Inter niveau                                                    OK
     - descendre blocks                                          OK
     - nouvelle spawning blocks                                  OK
 
-Bonus
-    - bananes en plus
+Bonus                                                           inProgress
+    - bananes en plus                                           OK
     - bananes rebondissantes sur le bas
     - raquette pendant une durée
     - etc ...
 
-CloseEvent saving !!
+CloseEvent saving ? //pop-up avec dernier niveau perfect (à enregistrer dans le player)

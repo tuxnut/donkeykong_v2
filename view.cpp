@@ -410,3 +410,9 @@ void View::on_pushButton_4_clicked()
 {
     this->close();
 }
+
+void View::on_pushButton_2_clicked()
+{
+    QString dir = QFileDialog::getOpenFileName(this, tr("Charger une partie sauvée"), "./", tr(".dat Files (*.dat)"));
+    control->openGame(dir);
+}

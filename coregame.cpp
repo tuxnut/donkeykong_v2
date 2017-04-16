@@ -14,6 +14,23 @@ CoreGame::CoreGame(Model *model, View &view) :
 }
 
 /**
+ * @brief CoreGame::openGame :open a saved game, asking the model to open the file
+ * @param dir : directory of the saved game file
+ */
+void CoreGame::openGame(const QString &dir)
+{
+    dk = new Player();
+    if (!dk)
+        qWarning("Error creating player");
+
+    if (model->loadPlayer(dir, dk)) {
+        view.displayGame(dk);
+        gameCore(true);
+    } else
+        qWarning("Error loading saved game file");
+}
+
+/**
  * @brief CoreGame::randomGenerator : generates random integer numbers between min and max (included)
  * @param min : minimum parameter
  * @param max : maximum parameter
@@ -94,11 +111,11 @@ bool CoreGame::monitorGame(QList<Banana *> bananas)
 /**
  * @brief CoreGame::gameCore : game loop
  */
-void CoreGame::gameCore()
+void CoreGame::gameCore(bool loadedGame)
 {
-    if (dk->getScore() > 0) {
+    if (dk->getScore() > 0 && (!loadedGame)) {
         if (view.checkPerfectLevel()) {
-            /* visitor codes saving game here */
+            model->saveGameAuto(dk);
         }
         view.repositionPlayer();
     }

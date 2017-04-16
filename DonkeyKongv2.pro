@@ -30,14 +30,16 @@ SOURCES += main.cpp\
     model.cpp \
     block.cpp \
     player.cpp \
-    banana.cpp
+    banana.cpp \
+    visitor.cpp
 
 HEADERS  += view.h \
     coregame.h \
     model.h \
     block.h \
     player.h \
-    banana.h
+    banana.h \
+    visitor.h
 
 FORMS    += view.ui
 

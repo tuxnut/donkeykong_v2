@@ -5,6 +5,7 @@
 #include "view.h"
 #include "block.h"
 #include "player.h"
+#include "visitor.h"
 #include <random>
 #include <QTimer>
 
@@ -23,12 +24,13 @@ private:
 
 public:
     CoreGame(Model *model, View &view);
+    void openGame(const QString &dir);
     int randomGenerator(int min, int max);
     void setupGame();
     int updateNbBananas();
     int * setupLevel();
     bool monitorGame(QList <Banana *> bananas);
-    void gameCore();
+    void gameCore(bool loadedGame = false);
 };
 
 #endif // COREGAME_H

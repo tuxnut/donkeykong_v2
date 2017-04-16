@@ -11,6 +11,7 @@
 #include <QGraphicsItemGroup>
 #include <QTimer>
 #include <typeinfo>
+#include <QFileDialog>
 
 /*** Basically game settings ***/
 #define VIEW_HEIGHT 800
@@ -69,6 +70,8 @@ private slots:
     void monitorGame();
     void thrower();
     void on_pushButton_4_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     bool bananaLauncherFlag;

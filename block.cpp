@@ -25,7 +25,6 @@ Block::Block(int points)
 
 bool Block::decPoints()
 {
-//    qDebug()<<"yo";
     points--;
     if (points == 0)
         return true;
@@ -47,14 +46,16 @@ void Block::setBonus(int type)
     points = 0;
     textItem->setText("");
     setRect(0, 0, BLOCK_SIZE/2, BLOCK_SIZE/2);
-    setTransformOriginPoint(BLOCK_SIZE/4, BLOCK_SIZE/4);
-    setRotation(45);
     bonus = type;
 }
 
 void Block::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if (0 < points && points < 10) {
+    if (bonus == 1) {
+        QPen pen(Qt::red, 2);
+        painter->setPen(pen);
+        painter->drawEllipse(this->rect());
+    } else if (0 < points && points < 10) {
         QPen pen(Qt::red, 1);
         painter->setPen(pen);
         painter->drawRect(this->rect());

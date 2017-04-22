@@ -16,6 +16,9 @@ Banana::Banana(QObject *parent) : QObject(parent)
     moveTimer = new QTimer();
     moveTimer->setInterval(INV_FPS);
     connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
+
+    // turning bananas !!
+    setTransformOriginPoint(BANANA_SIZE/2, BANANA_SIZE/2);
 }
 
 const QPointF Banana::getDirection()
@@ -41,8 +44,10 @@ bool Banana::thrownStatus() const
 
 void Banana::move()
 {
-    if (isThrown)
+    if (isThrown) {
         setPos(this->scenePos().x() + direction.x(), this->scenePos().y() + direction.y());
+//        setRotation(rotation() + 5);
+    }
 }
 
 void Banana::throwing()

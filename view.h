@@ -67,7 +67,7 @@ private slots:
     void playerAxisLeanLeft();
     void startPlaying();
     void collision();
-    void monitorGame();
+    void monitorLevel();
     void thrower();
     void on_pushButton_4_clicked();
 

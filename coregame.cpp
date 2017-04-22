@@ -58,48 +58,56 @@ void CoreGame::setupGame()
     gameCore();
 }
 
+/**
+ * @brief CoreGame::updateNbBananas : update nb of pixmap bananas to put into the scene
+ * @return
+ */
 int CoreGame::updateNbBananas()
 {
-    // update nb of pixmap bananas to put into the scene
-    if (dk->getNbBananas() != view.getNbPixmapBanana())
-        return dk->getNbBananas() - view.getNbPixmapBanana();
-    else
-        return 0;
+    return qAbs(dk->getNbBananas() - view.getNbPixmapBanana());
 }
 
-int * CoreGame::setupLevel()
-{    
+QVector<int> CoreGame::setupLevel()
+{
+    QVector<int> blockSettings;
+
     // nb of blocks we will create on a level (1 to max block on a single block line)
     int nbBlockToCreate = randomGenerator(1, MAX_BLOCKLINE);
 
     if (nbBlockToCreate > 0) {
-        QList <int> posXTable;
+        QList<int> posXTable;
         for (int i = 0; i < MAX_BLOCKLINE; i++) {
             posXTable.append(i);
         }
         // each block will have two settings : posX (we already know posY) and the number of bananas to
         // destroy it
-        int * blockSettings = (int*) malloc((nbBlockToCreate * 2 + 1) * sizeof(int));
-        blockSettings[0] = nbBlockToCreate; // ~size
-
-        for (int i = 1; i < nbBlockToCreate * 2; i += 2) {
+        for (int i = 0; i < nbBlockToCreate * 2; i += 2) {
             // set the position of the block (as the posx is set randomly, we don't want two blocks at the same position)
             int indice = randomGenerator(0, posXTable.size());
             int posX = posXTable[indice];
-            blockSettings[i] = posX * BLOCK_SIZE;
+            blockSettings.append(posX * BLOCK_SIZE);
             posXTable.removeAt(indice);
 
-            // set the points that the block will have
-            blockSettings[i+1] = randomGenerator(1, dk->getNbBananas());
+            // chances the block may become a bonus block - a bonus block has no point
+            if (randomGenerator(0, 100) > 85) {
+                blockSettings[i] += BLOCK_SIZE/4;
+                blockSettings.append(0);
+            } else {
+                // set the points that the block will have
+                blockSettings.append(randomGenerator(1, dk->getNbBananas()));
+            }
+
         }
-        return blockSettings;
-
-    } else
-        return NULL;
-
+    }
+    return blockSettings;
 }
 
-bool CoreGame::monitorGame(QList<Banana *> bananas)
+/**
+ * @brief CoreGame::monitorLevel : checks if every bananas have hit the floor which would mean the end of the level
+ * @param bananas : QList<Banana *>
+ * @return : true if every bananas have hit the floor, false otherwise (level still incomplete)
+ */
+bool CoreGame::monitorLevel(QList<Banana *> bananas)
 {
     foreach (Banana * ban, bananas) {
         if (ban->thrownStatus())
@@ -117,9 +125,9 @@ void CoreGame::gameCore(bool loadedGame)
         if (view.checkPerfectLevel()) {
             model->saveGameAuto(dk);
         }
-        view.repositionPlayer();
     }
     view.displayLevel();
+    view.repositionPlayer();
     if (view.lowerBlocks()) {
         dk->setScore();
         view.incScoreBoard();

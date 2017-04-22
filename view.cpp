@@ -26,7 +26,7 @@ View::View(QWidget *parent) :
     // this will ask the controler whether or not the bananas have all crashed
     monitoringTimer = new QTimer();
     monitoringTimer->setInterval(MONITORING_INTERVAL);
-    connect(this->monitoringTimer, SIGNAL(timeout()), this, SLOT(monitorGame()));
+    connect(this->monitoringTimer, SIGNAL(timeout()), this, SLOT(monitorLevel()));
 }
 
 View::~View()
@@ -124,31 +124,28 @@ void View::displayLevel()
     int bananaToCreate = this->control->updateNbBananas();
     for (int i = 0; i < bananaToCreate; i++) {
         bananas.append(new Banana());
-        bananas.at(i)->setPos(PLAYER_POSX + PLAYER_SIZE/4, PLAYER_POSY);
-        scene->addItem(bananas.at(i));
+        bananas.last()->setPos(PLAYER_POSX + PLAYER_SIZE/4, PLAYER_POSY);
+        scene->addItem(bananas.last());
     }
 
     // ask the controler what to add to the view
-    int * blockSettings = this->control->setupLevel();
+    QVector<int> blockSettings = this->control->setupLevel();
 
-    if (!blockSettings)
+    if (blockSettings.isEmpty())
         return;
 
-    for (int i = 1; i < 2 * blockSettings[0]; i += 2) {
+    for (int i = 0; i < blockSettings.size(); i += 2) {
         Block * block = new Block(blockSettings[i+1]);
-        int rnd = control->randomGenerator(0, 100);
-        qDebug()<<rnd;
-        if ( rnd > 90) {
+        if (blockSettings[i+1] == 0) {
             block->setBonus(1);
-            block->setPos(blockSettings[i] + BLOCK_SIZE/4, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-        } else
+            block->setPos(blockSettings[i], TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            qDebug()<<"bonus block at "<<block->scenePos();
+        } else {
             block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
+        }
 
         blocks->addToGroup(block);
     }
-
-    free(blockSettings);
-
 }
 
 /**
@@ -226,12 +223,12 @@ bool View::lowerBlocks() const
 }
 
 /**
- * @brief View::repositionPlayer : the new point for the player will be where the first banana of the list hit the floor (not necessarly the first one to actually do that but eh ...)
+ * @brief View::repositionPlayer : reposition the player where the first banana of the list hit the floor (not necessarly the first one to actually hit but eh ...)
  */
 void View::repositionPlayer()
 {
-    for (int i = 0; i < bananas.size(); ++i) {
-        bananas[i]->setPos(bananas.first()->scenePos().x(), PLAYER_POSY);
+    foreach (Banana * ban , bananas) {
+        ban->setPos(bananas.first()->scenePos().x(), PLAYER_POSY);
     }
     dk->setPos(bananas.first()->scenePos().x() - PLAYER_SIZE/4, PLAYER_POSY);
 }
@@ -337,10 +334,11 @@ void View::collision()
                 if (brik->getBonusType() != 0) {
                     switch (brik->getBonusType()) {
                     case MORE_BANANA_BONUS:
-                        dk->setNbBananas();
                         blocks->removeFromGroup(brik);
                         scene->removeItem(brik);
                         delete brik;
+                        dk->setNbBananas();
+                        incNbBananasBoard();
                         break;
                     default:
                         break;
@@ -353,7 +351,7 @@ void View::collision()
                             blocks->removeFromGroup(brik);
                             scene->removeItem(brik);
                             delete brik;
-                            dk->setNbBlockDestroyed(0);
+                            dk->setNbBlockDestroyed();
                             incNbBlockDestrBoard();
                         }
                     }
@@ -364,7 +362,7 @@ void View::collision()
                             blocks->removeFromGroup(brik);
                             scene->removeItem(brik);
                             delete brik;
-                            dk->setNbBlockDestroyed(0);
+                            dk->setNbBlockDestroyed();
                             incNbBlockDestrBoard();
                         }
                     }
@@ -378,12 +376,12 @@ void View::collision()
 }
 
 /**
- * @brief View::monitorGame : asks the controler whether all the bananas have crashed to detect end of level
+ * @brief View::monitorLevel : asks the controler whether all the bananas have crashed to detect end of level
  */
-void View::monitorGame()
+void View::monitorLevel()
 {
     // false = game continues   -   true = all the bananas crashed
-    if (this->control->monitorGame(bananas)) {
+    if (this->control->monitorLevel(bananas)) {
         monitoringTimer->stop();
         refreshTimer->stop();
         this->control->gameCore();
@@ -395,7 +393,6 @@ void View::monitorGame()
  */
 void View::thrower()
 {
-    qDebug()<<"1";
     if (bananaLauncherFlag) {
         bananas[indexOfBananaThrower]->throwing();
         indexOfBananaThrower++;

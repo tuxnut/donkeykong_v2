@@ -28,8 +28,9 @@ public:
     int randomGenerator(int min, int max);
     void setupGame();
     int updateNbBananas();
-    int * setupLevel();
-    bool monitorGame(QList <Banana *> bananas);
+//    int * setupLevel();
+    QVector <int> setupLevel();
+    bool monitorLevel(QList <Banana *> bananas);
     void gameCore(bool loadedGame = false);
 };
 

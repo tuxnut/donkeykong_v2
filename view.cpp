@@ -136,7 +136,9 @@ void View::displayLevel()
 
     for (int i = 1; i < 2 * blockSettings[0]; i += 2) {
         Block * block = new Block(blockSettings[i+1]);
-        if (control->randomGenerator(0, 100) > 90) {
+        int rnd = control->randomGenerator(0, 100);
+        qDebug()<<rnd;
+        if ( rnd > 90) {
             block->setBonus(1);
             block->setPos(blockSettings[i] + BLOCK_SIZE/4, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
         } else
@@ -144,6 +146,9 @@ void View::displayLevel()
 
         blocks->addToGroup(block);
     }
+
+    free(blockSettings);
+
 }
 
 /**
@@ -178,16 +183,15 @@ void View::gamePlaying()
     }
 
     // throwing them
-    bananaLauncherFlag = true;
-    if (bananas.size() >= 1) {
+    if (bananas.size() > 1) {
+        bananaLauncherFlag = true;
         indexOfBananaThrower = 1;
         QTimer * launcher = new QTimer();
         connect(launcher, SIGNAL(timeout()), this, SLOT(thrower()));
         launcher->start(THROWING_INTERVAL);
     }
+
     bananas.first()->throwing();
-
-
 
     // detect the collision
     refreshTimer->start();
@@ -391,6 +395,7 @@ void View::monitorGame()
  */
 void View::thrower()
 {
+    qDebug()<<"1";
     if (bananaLauncherFlag) {
         bananas[indexOfBananaThrower]->throwing();
         indexOfBananaThrower++;

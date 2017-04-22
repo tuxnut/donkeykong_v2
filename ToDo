@@ -28,4 +28,6 @@ Bonus                                                           inProgress
     - raquette pendant une durée
     - etc ...
 
+Passer les blocksttings en QList<int> du controleur à la vue
+
 CloseEvent saving ? //pop-up avec dernier niveau perfect (à enregistrer dans le player)

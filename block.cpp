@@ -26,6 +26,7 @@ Block::Block(int points)
 bool Block::decPoints()
 {
     points--;
+    textItem->setText(QString::number(this->points));
     if (points == 0)
         return true;
     else

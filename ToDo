@@ -1,16 +1,16 @@
 Spawning des rectangles                                         OK
-    - colorier en fonctions des points
+    - colorier en fonctions des points                          OK
 
 Collisions des bananes avec des vecteurs de direction           OK
 
 Chargement et savegarde des parties en JSon (visiteur !)        OK
 
-Meilleurs Scores
-    - nom des players ?
+Meilleurs Scores                                                inProgress (boutton de retour)
+    - nom des players ?                                         OK
 
 Animations des mouvements (blocks à l'inter level et player)
 
-Affichage des scores                                            inProgress
+Affichage des scores                                            OK
 
 Interaction avec claviers (déterminer l'angle de lancer)        OK
     - dessiner une ligne                                        OK
@@ -28,6 +28,8 @@ Bonus                                                           inProgress
     - raquette pendant une durée
     - etc ...
 
-Passer les blocksttings en QList<int> du controleur à la vue
+Passer les blocksttings en QList<int> du controleur à la vue    OK
+
+GameOver                                                        OK
 
 CloseEvent saving ? //pop-up avec dernier niveau perfect (à enregistrer dans le player)

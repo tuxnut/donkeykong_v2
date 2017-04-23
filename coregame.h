@@ -6,10 +6,10 @@
 #include "block.h"
 #include "player.h"
 #include "visitor.h"
+#include "gamesettings.h"
+
 #include <random>
 #include <QTimer>
-
-#define MAX_BLOCKLINE 12
 
 class Model;
 class View;
@@ -28,10 +28,11 @@ public:
     int randomGenerator(int min, int max);
     void setupGame();
     int updateNbBananas();
-//    int * setupLevel();
     QVector <int> setupLevel();
     bool monitorLevel(QList <Banana *> bananas);
     void gameCore(bool loadedGame = false);
+    QString getPlayerName();
+    void displayHighScores();
 };
 
 #endif // COREGAME_H

@@ -1,11 +1,11 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include "gamesettings.h"
+
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QPainter>
-
-#define BLOCK_SIZE 50
 
 class Block : public QObject, public QGraphicsRectItem
 {

@@ -11,6 +11,7 @@ CoreGame::CoreGame(Model *model, View &view) :
 {
     this->model = model;
     view.setControl(this);
+    model->setControl(this);
 }
 
 /**
@@ -124,17 +125,32 @@ void CoreGame::gameCore(bool loadedGame)
     if (dk->getScore() > 0 && (!loadedGame)) {
         if (view.checkPerfectLevel()) {
             model->saveGameAuto(dk);
+            dk->setLastCheckpoint(dk->getScore());
         }
     }
     view.displayLevel();
     view.repositionPlayer();
     if (view.lowerBlocks()) {
+        // game continues
         dk->setScore();
         view.incScoreBoard();
         view.playerAction();
     } else {
-        /* game lost */
+        // game is over
+        view.gameOver();
+        model->isHighScore(dk->getScore());
+        // view.displayHighScore();
+        // ToDo : get back to the last perfect level OR to the menu
     }
 }
 
+QString CoreGame::getPlayerName()
+{
+    const QString &str = view.getPlayerName();
+    return str;
+}
 
+void CoreGame::displayHighScores()
+{
+    view.displayHighScores(model->getHighScores());
+}

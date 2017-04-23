@@ -1,18 +1,12 @@
 #ifndef BANANA_H
 #define BANANA_H
 
-
+#include "gamesettings.h"
 #include "unistd.h"
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QVector2D>
 #include <QTimer>
-
-// number of px -> 60fps (0.01667s)
-#define DEFAULT_SPEEDX 0
-#define DEFAULT_SPEEDY -4
-#define BANANA_SIZE 20
-#define INV_FPS 17      // 1/fps = 1/60 ~= 17ms
 
 class Banana : public QObject, public QGraphicsPixmapItem
 {

@@ -7,4 +7,10 @@
     <qresource prefix="/animations">
         <file>res/anim.gif</file>
     </qresource>
+    <qresource prefix="/highscore">
+        <file>res/highscore.dat</file>
+    </qresource>
+    <qresource prefix="/form">
+        <file>highscore.ui</file>
+    </qresource>
 </RCC>

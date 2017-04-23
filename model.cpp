@@ -7,7 +7,17 @@ Model::Model()
 
 }
 
-bool Model::saveGameAuto(Player * p)
+void Model::setControl(CoreGame *control)
+{
+    this->control = control;
+}
+
+/**
+ * @brief Model::saveGameAuto : saves the game on a '.dat' file every time the player has realised a perfect level
+ * @param p : instance of player
+ * @return  : true if writing succeeded, false otherwise
+ */
+bool Model::saveGameAuto(Player * p) const
 {
     QJsonObject obj;
     obj["Score"] = p->getScore();
@@ -18,7 +28,7 @@ bool Model::saveGameAuto(Player * p)
 
     QFile file("saver.dat");
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning("couldnn't create saving file");
+        qWarning("couldn't create saving file");
         return false;
     }
 
@@ -28,7 +38,13 @@ bool Model::saveGameAuto(Player * p)
     return true;
 }
 
-bool Model::loadPlayer(const QString &dir, Player *p)
+/**
+ * @brief Model::loadPlayer : will load a player from a '.dat' file
+ * @param dir : path to the file to load
+ * @param p : instance of player
+ * @return : true if loading succeeded, false otherwise
+ */
+bool Model::loadPlayer(const QString &dir, Player *p) const
 {
     if (!QFile::exists(dir))
         return false;
@@ -49,4 +65,77 @@ bool Model::loadPlayer(const QString &dir, Player *p)
     p->setNbBlockDestroyed(obj["NbBlocksDestroyed"].toInt());
 
     return true;
+}
+
+/**
+ * @brief Model::isHighScore : determine if the score is an high score and will write on the highscores file accordingly
+ * @param score : the score of the player
+ * @return  : true if writing succeeded, false otherwise
+ */
+bool Model::isHighScore(const int &score) const
+{
+    QFile file(":/highscore/res/highscore.dat");
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
+
+    QJsonDocument doc = QJsonDocument::fromBinaryData(file.readAll());
+    if (doc.isNull())
+        return false;
+
+    file.close();
+
+    QJsonObject obj = doc.object();
+    QJsonArray highscore = obj["highscore"].toArray();
+    int index = 1;
+    foreach (const QJsonValue &val, highscore) {
+
+        QJsonObject player = val.toObject();
+
+        if (score > player["Score"].toInt()) {
+
+            const QString &playerName = this->control->getPlayerName();
+
+            QJsonObject newPlayer;
+            newPlayer["Name"] = playerName;
+            newPlayer["Score"] = score;
+            highscore.insert(index, QJsonValue(newPlayer));
+            highscore.removeLast();
+
+            break;
+        }
+        index++;
+    }
+    return true;
+}
+
+/**
+ * @brief Model::getHighScores : reads the highscores.dat to extract the data
+ * @return : QVector<Qhighscores>
+ */
+const QVector<Qhighscore> Model::getHighScores()
+{
+    QVector<Qhighscore> highScoresVect;
+
+    QFile file(":/highscore/res/highscore.dat");
+    if (!file.open(QIODevice::ReadOnly))
+        return highScoresVect;
+
+    QJsonDocument doc = QJsonDocument::fromBinaryData(file.readAll());
+    if (doc.isNull())
+        return highScoresVect;
+
+    file.close();
+
+    QJsonObject obj = doc.object();
+    QJsonArray highscore = obj["highscore"].toArray();
+    foreach (const QJsonValue &val, highscore) {
+
+        QJsonObject player = val.toObject();
+        Qhighscore jepasdidedenom;
+        jepasdidedenom.playerName = player["Name"].toString();
+        jepasdidedenom.score = player["Score"].toInt();
+
+        highScoresVect.append(jepasdidedenom);
+    }
+    return highScoresVect;
 }

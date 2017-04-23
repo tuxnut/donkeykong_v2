@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui uitools
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -39,9 +39,11 @@ HEADERS  += view.h \
     block.h \
     player.h \
     banana.h \
-    visitor.h
+    visitor.h \
+    gamesettings.h
 
-FORMS    += view.ui
+FORMS    += view.ui \
+    highscore.ui
 
 RESOURCES += \
     res.qrc

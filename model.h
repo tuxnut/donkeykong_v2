@@ -2,19 +2,29 @@
 #define MODEL_H
 
 #include "player.h"
+#include "coregame.h"
+#include "gamesettings.h"
 
 #include <QFile>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 class Player;
+class CoreGame;
 
 class Model
 {
+private:
+    CoreGame * control;
+
 public:
     Model();
-    bool saveGameAuto(Player *p);
-    bool loadPlayer(const QString &dir, Player * p);
+    void setControl(CoreGame * control);
+    bool saveGameAuto(Player *p) const;
+    bool loadPlayer(const QString &dir, Player * p) const;
+    bool isHighScore(const int &score) const;
+    const QVector<Qhighscore> getHighScores();
 };
 
 #endif // MODEL_H

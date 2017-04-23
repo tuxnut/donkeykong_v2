@@ -1,5 +1,6 @@
 #include "view.h"
 #include "ui_view.h"
+#include "ui_highscore.h"
 #include "coregame.h"
 
 #include <QDebug>
@@ -14,6 +15,7 @@ View::View(QWidget *parent) :
     ui(new Ui::View)
 {
     ui->setupUi(this);
+    setFixedSize(VIEW_WIDTH, VIEW_HEIGHT);
     scene = new QGraphicsScene(this);
     blocks = new QGraphicsItemGroup();
     scene->addItem(blocks);
@@ -139,7 +141,7 @@ void View::displayLevel()
         if (blockSettings[i+1] == 0) {
             block->setBonus(1);
             block->setPos(blockSettings[i], TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-            qDebug()<<"bonus block at "<<block->scenePos();
+//            qDebug()<<"bonus block at "<<block->scenePos();
         } else {
             block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
         }
@@ -216,9 +218,9 @@ bool View::checkPerfectLevel() const
  */
 bool View::lowerBlocks() const
 {
-    for (int i = 0; i < 10; ++i) {
-        blocks->setPos(blocks->scenePos()+=QPointF(0, 5));
-    }
+    blocks->setPos(blocks->scenePos()+=QPointF(0, 50));
+    if (2 * TOP_LINE_HEIGHT + blocks->boundingRect().height() >= BOTTOM_LINE_HEIGHT)
+        return false;
     return true;
 }
 
@@ -255,6 +257,70 @@ void View::incNbBlockDestrBoard()
 void View::incNbBananasBoard()
 {
     bananaItem->setPlainText("Bananes : " + QString::number(dk->getNbBananas()));
+}
+
+/**
+ * @brief View::gameOver : display a msgbox that will present the score
+ */
+void View::gameOver()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Game Over");
+    msgBox.setText("Your score : " + QString::number(dk->getScore()) +".");
+    msgBox.setInformativeText("Your last checkpoint was level : " + QString::number(dk->getLastCheckpoint()) +".");
+    msgBox.exec();
+}
+
+/**
+ * @brief View::getPlayerName : asks the name of the player
+ * @return : QString
+ */
+const QString View::getPlayerName()
+{
+    bool ok;
+    QString playerName = QInputDialog::getText(this, "HighScores Board", "Please enter your name", QLineEdit::Normal, QString(), &ok);
+
+    if (ok && !playerName.isEmpty())
+        return playerName;
+    else
+        return "Unnamed Player";
+}
+
+void View::displayHighScores(const QVector<Qhighscore> highScores)
+{
+    QGraphicsView * gameView = new QGraphicsView(scene, this);
+    gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    gameView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    gameView->setFixedSize(VIEW_WIDTH, VIEW_HEIGHT);
+    scene->setSceneRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
+    gameView->setBackgroundBrush(QBrush(QPixmap(":/img/res/bck_img_game.png")));
+
+    gameView->show();
+
+    QUiLoader loader;
+
+    QFile file(":/form/highscore.ui");
+    file.open(QFile::ReadOnly);
+
+    QWidget * formWidget = loader.load(&file, this);
+    file.close();
+
+    for (int i = 0; i < 5; ++i) {
+        QLabel * labelName = formWidget->findChild<QLabel*>("label_"+QString::number(i));
+        labelName->setText(highScores[i].playerName);
+        QLabel * labelScore = formWidget->findChild<QLabel*>("label_"+QString::number(i)+QString::number(i));
+        labelScore->setText(QString::number(highScores[i].score));
+    }
+
+    QPushButton * pushbutton = formWidget->findChild<QPushButton*>("pushButton");
+    connect(pushbutton, SIGNAL(clicked(bool)), this, SLOT(setupui()));
+
+    formWidget->show();
+}
+
+void View::setupui()
+{
+    ui->setupUi(this);
 }
 
 //////*** SLOTS ***//////
@@ -417,4 +483,9 @@ void View::on_pushButton_2_clicked()
 {
     QString dir = QFileDialog::getOpenFileName(this, tr("Charger une partie sauvée"), "./", tr(".dat Files (*.dat)"));
     control->openGame(dir);
+}
+
+void View::on_pushButton_3_clicked()
+{
+    this->control->displayHighScores();
 }

@@ -1,12 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "gamesettings.h"
+
 #include <QGraphicsPixmapItem>
 #include <QObject> // need this for the connect signal / slot
 #include <QMovie>
 #include <QKeyEvent>
-
-#define BANANAS_DEFAULT 1;
 
 class Player : public QObject, public QGraphicsPixmapItem
 {
@@ -17,6 +17,7 @@ private:
     int bananas;
     int score;
     int blockDestroyed;
+    int lastCheckpoint;
 
 public:
     explicit Player(QObject *parent = 0);
@@ -24,9 +25,11 @@ public:
     int getNbBananas() const;
     int getScore() const;
     int getNbBlockDestroyed() const;
+    int getLastCheckpoint() const;
     void setNbBananas(const int nbBananas = 0);
     void setScore(const int score = 0);
     void setNbBlockDestroyed(const int nbBlocks = 0);
+    void setLastCheckpoint(const int checkpoint);
     void animation(QMovie * source);
     void keyPressEvent(QKeyEvent * event);
 

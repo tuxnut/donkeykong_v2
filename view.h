@@ -5,6 +5,7 @@
 #include "player.h"
 #include "unistd.h"
 #include "banana.h"
+#include "gamesettings.h"
 
 #include <QMainWindow>
 #include <QGraphicsView>
@@ -12,26 +13,9 @@
 #include <QTimer>
 #include <typeinfo>
 #include <QFileDialog>
-
-/*** Basically game settings ***/
-#define VIEW_HEIGHT 800
-#define VIEW_WIDTH 600
-#define BOTTOM_LINE_HEIGHT 750
-#define TOP_LINE_HEIGHT 50
-#define BLOCK_DESTR_POSX 425
-#define PLAYER_POSX 275
-#define PLAYER_POSY 700
-#define PLAYER_SIZE 50
-#define BANANA_SIZE 20
-#define MAX_ROTATION 80 // of the axis while rotating
-#define AXIS_OFFSET 90  // since its vertical at the initialization
-#define BANANAS_SPEED 4 // in px per frame (if possible 60 fps)
-#define REFRESH_COLLISION 17 // match the FPS
-#define MONITORING_INTERVAL 150
-#define THROWING_INTERVAL 200
-#define MORE_BANANA_BONUS 1
-#define PADDLE_BONUS 2
-#define MORE_LIFE_BANANA_BONUS 3
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QtUiTools>
 
 class CoreGame;
 class Player;
@@ -60,8 +44,12 @@ public:
     void incScoreBoard();
     void incNbBlockDestrBoard();
     void incNbBananasBoard();
+    void gameOver();
+    const QString getPlayerName();
+    void displayHighScores(const QVector<Qhighscore> highScores);
 
 private slots:
+    void setupui();
     void on_pushButton_clicked();
     void playerAxisLeanRight();
     void playerAxisLeanLeft();
@@ -70,8 +58,8 @@ private slots:
     void monitorLevel();
     void thrower();
     void on_pushButton_4_clicked();
-
     void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
 
 private:
     bool bananaLauncherFlag;

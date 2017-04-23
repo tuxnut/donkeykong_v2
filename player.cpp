@@ -8,6 +8,7 @@ Player::Player(QObject *parent) : QObject(parent)
     this->score = 0;
     this->bananas = BANANAS_DEFAULT;
     this->blockDestroyed = 0;
+    this->lastCheckpoint = 0;
     animation(new QMovie(":/animations/res/anim.gif"));
     setScale(scale() / 4);
 }
@@ -25,6 +26,11 @@ int Player::getScore() const
 int Player::getNbBlockDestroyed() const
 {
     return this->blockDestroyed;
+}
+
+int Player::getLastCheckpoint() const
+{
+    return this->lastCheckpoint;
 }
 
 void Player::setNbBananas(const int nbBananas)
@@ -49,6 +55,11 @@ void Player::setNbBlockDestroyed(const int nbBlocks)
         this->blockDestroyed = nbBlocks;
     else
         this->blockDestroyed++;
+}
+
+void Player::setLastCheckpoint(const int checkpoint)
+{
+    this->lastCheckpoint = checkpoint;
 }
 
 void Player::animation(QMovie *source)

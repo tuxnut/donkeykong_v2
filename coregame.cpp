@@ -122,14 +122,21 @@ bool CoreGame::monitorLevel(QList<Banana *> bananas)
  */
 void CoreGame::gameCore(bool loadedGame)
 {
+    // If the level is at least the second one
     if (dk->getScore() > 0 && (!loadedGame)) {
+        // check ig perfect level -> our condition to 'autosave' the game, and make a checkpoint
         if (view.checkPerfectLevel()) {
             model->saveGameAuto(dk);
             dk->setLastCheckpoint(dk->getScore());
         }
     }
+    // update nb banana and display the new line of blocks
     view.displayLevel();
+
+    // reposition the player and its bananas
     view.repositionPlayer();
+
+    // basivally our condition whether it's game over or not
     if (view.lowerBlocks()) {
         // game continues
         dk->setScore();
@@ -138,7 +145,9 @@ void CoreGame::gameCore(bool loadedGame)
     } else {
         // game is over
         view.gameOver();
-        model->isHighScore(dk->getScore());
+        // check if score is highscore AND writes it on the highscore.dat file
+        qDebug()<<"hein ?";
+        qDebug()<< model->isHighScore(dk->getScore());
         // view.displayHighScore();
         // ToDo : get back to the last perfect level OR to the menu
     }

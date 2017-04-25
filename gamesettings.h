@@ -7,7 +7,7 @@
 #define BANANA_SIZE 20
 #define DEFAULT_SPEEDX 0
 #define DEFAULT_SPEEDY -4
-#define BANANAS_SPEED 10 // in px per frame (if possible 60 fps)
+#define BANANAS_SPEED 20 // in px per frame (if possible 60 fps)
 #define BANANA_SIZE 20
 #define INV_FPS 17      // 1/fps = 1/60 ~= 17ms
 
@@ -37,6 +37,9 @@
 #define MORE_BANANA_BONUS 1
 #define PADDLE_BONUS 2
 #define MORE_LIFE_BANANA_BONUS 3
+
+// pop-up and messageBoxs settings
+#define GAME_OVER_WIDTH 200
 
 typedef struct Qhighscore {
     QString playerName;

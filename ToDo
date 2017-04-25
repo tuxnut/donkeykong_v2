@@ -1,20 +1,24 @@
 Spawning des rectangles                                         OK
     - colorier en fonctions des points                          OK
 
-Collisions des bananes avec des vecteurs de direction           OK
+Collisions des bananes avec des vecteurs de direction           OK - to be re arranged !!
+        ->set un timer pour qu'une bannane ne collisionne qu'une fois toutes les X ms
 
-Chargement et savegarde des parties en JSon (visiteur !)        OK
+Chargement et savegarde des parties en JSon (visiteur !)        inProgress
+        ->régler la sauvegarde : pas faite dans le .dat !!!!
 
-Meilleurs Scores                                                inProgress (boutton de retour)
+Meilleurs Scores                                                inProgress
+        ->ui est dégueu : superposition des ui, boutin de retour useless, etc ...
     - nom des players ?                                         OK
 
 Animations des mouvements (blocks à l'inter level et player)
 
-Affichage des scores                                            OK
+Affichage des scores                                            inProgress
+        ->on peut faire 2-3 trucs sur la couleurs, les Fontts, etc ...
 
 Interaction avec claviers (déterminer l'angle de lancer)        OK
     - dessiner une ligne                                        OK
-    - bouger droite et gauche                                   OK
+    - bouger droite et gauche                                   OK !!!! pas immédiat !!!!
     - lancer                                                    OK
 
 Inter niveau                                                    OK

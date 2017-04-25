@@ -59,6 +59,7 @@ void Player::setNbBlockDestroyed(const int nbBlocks)
 
 void Player::setLastCheckpoint(const int checkpoint)
 {
+    qDebug()<<"the level "<< checkpoint<<" is a checkpoint";
     this->lastCheckpoint = checkpoint;
 }
 

@@ -74,25 +74,25 @@ bool Model::loadPlayer(const QString &dir, Player *p) const
  */
 bool Model::isHighScore(const int &score) const
 {
+    qDebug()<<"0";
     QFile file(":/highscore/res/highscore.dat");
-    if (!file.open(QIODevice::ReadOnly))
+    if (!file.open(QIODevice::ReadWrite))
         return false;
-
+    qDebug()<<"1";
     QJsonDocument doc = QJsonDocument::fromBinaryData(file.readAll());
     if (doc.isNull())
         return false;
-
-    file.close();
-
+    qDebug()<<"2";
     QJsonObject obj = doc.object();
     QJsonArray highscore = obj["highscore"].toArray();
     int index = 1;
+    qDebug()<<"3";
     foreach (const QJsonValue &val, highscore) {
-
+        qDebug()<<"4";
         QJsonObject player = val.toObject();
-
+        qDebug()<<player["Score"].toInt() << " et nv score : " << score;
         if (score > player["Score"].toInt()) {
-
+            qDebug()<<"lol";
             const QString &playerName = this->control->getPlayerName();
 
             QJsonObject newPlayer;
@@ -105,6 +105,8 @@ bool Model::isHighScore(const int &score) const
         }
         index++;
     }
+    file.write(doc.toBinaryData());
+    file.close();
     return true;
 }
 

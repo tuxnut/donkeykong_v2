@@ -205,8 +205,8 @@ void View::gamePlaying()
  */
 bool View::checkPerfectLevel() const
 {
-    foreach (const QGraphicsItem * item, scene->items()) {
-        if (typeid(item) == typeid(Block))
+    foreach (QGraphicsItem * item, scene->items()) {
+        if (Block * block = dynamic_cast<Block*>(item))
             return false;
     }
     return true;
@@ -266,6 +266,7 @@ void View::gameOver()
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle("Game Over");
+    msgBox.setMinimumWidth(GAME_OVER_WIDTH);
     msgBox.setText("Your score : " + QString::number(dk->getScore()) +".");
     msgBox.setInformativeText("Your last checkpoint was level : " + QString::number(dk->getLastCheckpoint()) +".");
     msgBox.exec();
@@ -286,6 +287,10 @@ const QString View::getPlayerName()
         return "Unnamed Player";
 }
 
+/**
+ * @brief View::displayHighScores : display the highscores saved in a '.dat' file
+ * @param highScores : highscores data retrieved via the model
+ */
 void View::displayHighScores(const QVector<Qhighscore> highScores)
 {
     QGraphicsView * gameView = new QGraphicsView(scene, this);

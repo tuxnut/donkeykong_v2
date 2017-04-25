@@ -4,17 +4,15 @@ Spawning des rectangles                                         OK
 Collisions des bananes avec des vecteurs de direction           OK - to be re arranged !!
         ->set un timer pour qu'une bannane ne collisionne qu'une fois toutes les X ms
 
-Chargement et savegarde des parties en JSon (visiteur !)        inProgress
+Chargement et savegarde des parties en JSon                     inProgress
         ->régler la sauvegarde : pas faite dans le .dat !!!!
 
 Meilleurs Scores                                                inProgress
         ->ui est dégueu : superposition des ui, boutin de retour useless, etc ...
     - nom des players ?                                         OK
 
-Animations des mouvements (blocks à l'inter level et player)
-
 Affichage des scores                                            inProgress
-        ->on peut faire 2-3 trucs sur la couleurs, les Fontts, etc ...
+        ->on peut faire 2-3 trucs sur la couleurs, les Fonts, etc ...
 
 Interaction avec claviers (déterminer l'angle de lancer)        OK
     - dessiner une ligne                                        OK
@@ -34,6 +32,6 @@ Bonus                                                           inProgress
 
 Passer les blocksttings en QList<int> du controleur à la vue    OK
 
-GameOver                                                        OK
+GameOver                                                        inProgress
 
 CloseEvent saving ? //pop-up avec dernier niveau perfect (à enregistrer dans le player)

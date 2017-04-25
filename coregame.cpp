@@ -24,7 +24,7 @@ void CoreGame::openGame(const QString &dir)
     if (!dk)
         qWarning("Error creating player");
 
-    if (model->loadPlayer(dir, dk)) {
+    if (model->loadPlayer(dk, dir)) {
         view.displayGame(dk);
         gameCore(true);
     } else
@@ -146,10 +146,14 @@ void CoreGame::gameCore(bool loadedGame)
         // game is over
         view.gameOver();
         // check if score is highscore AND writes it on the highscore.dat file
-        qDebug()<<"hein ?";
-        qDebug()<< model->isHighScore(dk->getScore());
-        // view.displayHighScore();
-        // ToDo : get back to the last perfect level OR to the menu
+        model->isHighScore(dk->getScore());
+
+        view.cleanUpGame();
+        if (view.playerLoadCheckpoint()) {
+            model->loadPlayer(dk);
+            gameCore(true);
+        } //else
+//            cleanerGlobal();
     }
 }
 
@@ -161,5 +165,10 @@ QString CoreGame::getPlayerName()
 
 void CoreGame::displayHighScores()
 {
-    view.displayHighScores(model->getHighScores());
+    QVector<Qhighscore> vectorQhighscore = model->getHighScores();
+    if (vectorQhighscore.isEmpty())
+        // error message
+        qWarning("couldn't parse the highscore file");
+    else
+        view.displayHighScores(model->getHighScores());
 }

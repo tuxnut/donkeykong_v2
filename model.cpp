@@ -44,7 +44,7 @@ bool Model::saveGameAuto(Player * p) const
  * @param p : instance of player
  * @return : true if loading succeeded, false otherwise
  */
-bool Model::loadPlayer(const QString &dir, Player *p) const
+bool Model::loadPlayer(Player *p, const QString &dir) const
 {
     if (!QFile::exists(dir))
         return false;
@@ -63,7 +63,6 @@ bool Model::loadPlayer(const QString &dir, Player *p) const
     p->setScore(obj["Score"].toInt());
     p->setNbBananas(obj["NbBananas"].toInt());
     p->setNbBlockDestroyed(obj["NbBlocksDestroyed"].toInt());
-
     return true;
 }
 
@@ -74,25 +73,21 @@ bool Model::loadPlayer(const QString &dir, Player *p) const
  */
 bool Model::isHighScore(const int &score) const
 {
-    qDebug()<<"0";
-    QFile file(":/highscore/res/highscore.dat");
-    if (!file.open(QIODevice::ReadWrite))
+    QFile file("../DonkeyKongv2/res/highscore.dat");
+    if (!file.open(QIODevice::ReadOnly))
         return false;
-    qDebug()<<"1";
+
     QJsonDocument doc = QJsonDocument::fromBinaryData(file.readAll());
     if (doc.isNull())
         return false;
-    qDebug()<<"2";
-    QJsonObject obj = doc.object();
-    QJsonArray highscore = obj["highscore"].toArray();
-    int index = 1;
-    qDebug()<<"3";
+    file.close();
+
+    QJsonArray highscore = doc.array();
+    int index = 0;
+
     foreach (const QJsonValue &val, highscore) {
-        qDebug()<<"4";
         QJsonObject player = val.toObject();
-        qDebug()<<player["Score"].toInt() << " et nv score : " << score;
         if (score > player["Score"].toInt()) {
-            qDebug()<<"lol";
             const QString &playerName = this->control->getPlayerName();
 
             QJsonObject newPlayer;
@@ -105,8 +100,13 @@ bool Model::isHighScore(const int &score) const
         }
         index++;
     }
+
+
+    doc.setArray(highscore);
+    file.open(QIODevice::WriteOnly);
     file.write(doc.toBinaryData());
     file.close();
+
     return true;
 }
 
@@ -118,7 +118,7 @@ const QVector<Qhighscore> Model::getHighScores()
 {
     QVector<Qhighscore> highScoresVect;
 
-    QFile file(":/highscore/res/highscore.dat");
+    QFile file("../DonkeyKongv2/res/highscore.dat");
     if (!file.open(QIODevice::ReadOnly))
         return highScoresVect;
 
@@ -128,8 +128,7 @@ const QVector<Qhighscore> Model::getHighScores()
 
     file.close();
 
-    QJsonObject obj = doc.object();
-    QJsonArray highscore = obj["highscore"].toArray();
+    QJsonArray highscore = doc.array();
     foreach (const QJsonValue &val, highscore) {
 
         QJsonObject player = val.toObject();

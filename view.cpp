@@ -141,7 +141,6 @@ void View::displayLevel()
         if (blockSettings[i+1] == 0) {
             block->setBonus(1);
             block->setPos(blockSettings[i], TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-//            qDebug()<<"bonus block at "<<block->scenePos();
         } else {
             block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
         }
@@ -323,6 +322,50 @@ void View::displayHighScores(const QVector<Qhighscore> highScores)
     formWidget->show();
 }
 
+/**
+ * @brief View::cleanUpGame : remove the bananas and the blocks from the scene / memory
+ */
+void View::cleanUpGame()
+{
+    // remove the blocks
+    foreach(QGraphicsItem * item, scene->items()) {
+        if (typeid(*item) == typeid(Block)) {
+            blocks->removeFromGroup(item);
+            scene->removeItem(item);
+            delete item;
+        }
+    }
+    //remove the bananas
+    foreach (Banana * ban, bananas) {
+        scene->removeItem(ban);
+        delete ban;
+    }
+    bananas.clear();
+
+}
+
+/**
+ * @brief View::playerLoadCheckpoint : ask the player wheter or not to load the last checkpoint
+ * @return : false if the player does not want to load the las checkpoint, true otherwise.
+ */
+bool View::playerLoadCheckpoint()
+{
+    QString str = "Voulez-vous chargez le dernier checkpoint ("+QString::number(dk->getLastCheckpoint())+") ?";
+    const int reply = QMessageBox::question(this, "Game Over", str, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+    switch (reply) {
+    case QMessageBox::Yes:
+        return true;
+    case QMessageBox::No:
+        return false;
+    default:
+        return true;
+    }
+}
+
+/**
+ * @brief View::setupui : loads the main menu ui
+ */
 void View::setupui()
 {
     ui->setupUi(this);

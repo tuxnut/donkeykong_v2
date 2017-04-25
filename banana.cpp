@@ -9,8 +9,8 @@ Banana::Banana(QObject *parent) : QObject(parent)
     setPixmap(QPixmap(":/img/res/img_banana_simple.png"));
 
     // set default direction
-    this->direction.setX(DEFAULT_SPEEDX);
-    this->direction.setY(DEFAULT_SPEEDY);
+    this->direction.setX(0);
+    this->direction.setY(-BANANAS_SPEED);
 
     // connect timer for moving the banana
     moveTimer = new QTimer();

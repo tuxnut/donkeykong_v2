@@ -47,6 +47,8 @@ public:
     void gameOver();
     const QString getPlayerName();
     void displayHighScores(const QVector<Qhighscore> highScores);
+    void cleanUpGame();
+    bool playerLoadCheckpoint();
 
 private slots:
     void setupui();

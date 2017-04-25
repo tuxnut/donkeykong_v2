@@ -22,7 +22,7 @@ public:
     Model();
     void setControl(CoreGame * control);
     bool saveGameAuto(Player *p) const;
-    bool loadPlayer(const QString &dir, Player * p) const;
+    bool loadPlayer(Player * p, const QString &dir = "saver.dat") const;
     bool isHighScore(const int &score) const;
     const QVector<Qhighscore> getHighScores();
 };

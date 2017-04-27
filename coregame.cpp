@@ -152,8 +152,9 @@ void CoreGame::gameCore(bool loadedGame)
         if (view.playerLoadCheckpoint()) {
             model->loadPlayer(dk);
             gameCore(true);
-        } //else
-//            cleanerGlobal();
+        } else {
+            view.closeEvent(new QCloseEvent());
+        }
     }
 }
 
@@ -167,8 +168,14 @@ void CoreGame::displayHighScores()
 {
     QVector<Qhighscore> vectorQhighscore = model->getHighScores();
     if (vectorQhighscore.isEmpty())
-        // error message
         qWarning("couldn't parse the highscore file");
     else
         view.displayHighScores(model->getHighScores());
+}
+
+void CoreGame::closeCleanup()
+{
+//    free(dk);
+//    delete dk;
+    dk = nullptr;
 }

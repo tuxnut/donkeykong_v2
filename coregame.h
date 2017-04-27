@@ -33,6 +33,7 @@ public:
     void gameCore(bool loadedGame = false);
     QString getPlayerName();
     void displayHighScores();
+    void closeCleanup();
 };
 
 #endif // COREGAME_H

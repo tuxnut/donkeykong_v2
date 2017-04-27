@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QtUiTools>
+#include <QCloseEvent>
 
 class CoreGame;
 class Player;
@@ -49,6 +50,7 @@ public:
     void displayHighScores(const QVector<Qhighscore> highScores);
     void cleanUpGame();
     bool playerLoadCheckpoint();
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void setupui();

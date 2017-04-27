@@ -29,6 +29,8 @@ View::View(QWidget *parent) :
     monitoringTimer = new QTimer();
     monitoringTimer->setInterval(MONITORING_INTERVAL);
     connect(this->monitoringTimer, SIGNAL(timeout()), this, SLOT(monitorLevel()));
+
+    dk = nullptr;
 }
 
 View::~View()
@@ -364,14 +366,50 @@ bool View::playerLoadCheckpoint()
 }
 
 /**
+ * @brief View::closeEvent : clean up the memory used by the program
+ * @param event
+ */
+void View::closeEvent(QCloseEvent * event)
+{
+    int reply;
+    qDebug()<<(long)dk;
+    if ((dk != nullptr) && dk->getLastCheckpoint() != dk->getScore()) {
+        QString str = "Votre dernier checkpoint est au niveau "+ QString::number(dk->getLastCheckpoint()) +". Voulez-vous tout de meme fermer l'application ?";
+        reply = QMessageBox::question(this, "Fermeture", str, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    }
+
+    switch (reply) {
+    case QMessageBox::Yes:
+        scene->clear();
+        qDebug()<<"1";
+        delete refreshTimer;
+        qDebug()<<"1";
+        delete monitoringTimer;
+        qDebug()<<"1";
+        control->closeCleanup();
+        qDebug()<<"1";
+        event->accept();
+        break;
+    case QMessageBox::No:
+        event->ignore();
+        break;
+    default:
+        event->accept();
+        break;
+    }
+}
+
+////////*** SLOTS ***/////////
+
+/**
  * @brief View::setupui : loads the main menu ui
  */
 void View::setupui()
 {
+
     ui->setupUi(this);
 }
 
-//////*** SLOTS ***//////
 /**
  * @brief View::on_pushButton_clicked : slot for the "Play" button
  */

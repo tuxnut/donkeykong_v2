@@ -74,6 +74,9 @@ bool Model::loadPlayer(Player *p, const QString &dir) const
 bool Model::isHighScore(const int &score) const
 {
     QFile file("../DonkeyKongv2/res/highscore.dat");
+    if (!file.exists())
+        file.setFileName("/home/thierry/coding/Qt/donkeykongv2/DonkeyKongv2/res/highscore.dat");
+
     if (!file.open(QIODevice::ReadOnly))
         return false;
 
@@ -119,6 +122,9 @@ const QVector<Qhighscore> Model::getHighScores()
     QVector<Qhighscore> highScoresVect;
 
     QFile file("../DonkeyKongv2/res/highscore.dat");
+    if (!file.exists())
+        file.setFileName("/home/thierry/coding/Qt/donkeykongv2/DonkeyKongv2/res/highscore.dat");
+
     if (!file.open(QIODevice::ReadOnly))
         return highScoresVect;
 

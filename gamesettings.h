@@ -36,12 +36,24 @@
 #define PADDLE_BONUS 2
 #define MORE_LIFE_BANANA_BONUS 3
 
+// paddle settings
+#define LIFESPAN_PADDLE 15000
+#define PADDLE_WIDTH 100
+#define PADDLE_HEGHT 10
+
 // pop-up and messageBoxs settings
 #define GAME_OVER_WIDTH 200
 
+// define some data struct
 typedef struct Qhighscore {
     QString playerName;
     int score;
 } Qhighscore;
+
+typedef struct blockSettings {
+    int posX;
+    int point;
+    int bonusType;
+} blockSettings;
 
 #endif // GAMESETTINGS_H

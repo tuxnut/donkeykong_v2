@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     block.cpp \
     player.cpp \
     banana.cpp \
-    visitor.cpp
+    visitor.cpp \
+    paddle.cpp
 
 HEADERS  += view.h \
     coregame.h \
@@ -40,7 +41,8 @@ HEADERS  += view.h \
     player.h \
     banana.h \
     visitor.h \
-    gamesettings.h
+    gamesettings.h \
+    paddle.h
 
 FORMS    += view.ui \
     highscore.ui

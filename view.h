@@ -6,6 +6,7 @@
 #include "unistd.h"
 #include "banana.h"
 #include "gamesettings.h"
+#include "paddle.h"
 
 #include <QMainWindow>
 #include <QGraphicsView>
@@ -51,6 +52,7 @@ public:
     void cleanUpGame();
     bool playerLoadCheckpoint();
     void closeEvent(QCloseEvent *event);
+    void addPaddleBonus();
 
 private slots:
     void setupui();
@@ -61,6 +63,7 @@ private slots:
     void collision();
     void monitorLevel();
     void thrower();
+    void removePaddle();
     void on_pushButton_4_clicked();
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
@@ -68,11 +71,13 @@ private slots:
 private:
     bool bananaLauncherFlag;
     int indexOfBananaThrower;
+    bool paddle;
     QTimer * refreshTimer;
     QTimer * monitoringTimer;
     QGraphicsScene * scene;
     QList <Banana *> bananas; // this is a graphics element (derived from QGraphicsPixmapItems)
     Player * dk; // this is also a grpahics element (derived from QGraphicsPixmapItems)
+    Paddle * pad;
     QGraphicsLineItem * playerAxis;
     QGraphicsTextItem * scoreItem;
     QGraphicsTextItem * blockDestrItem;

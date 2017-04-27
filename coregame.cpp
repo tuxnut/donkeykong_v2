@@ -68,9 +68,9 @@ int CoreGame::updateNbBananas()
     return qAbs(dk->getNbBananas() - view.getNbPixmapBanana());
 }
 
-QVector<int> CoreGame::setupLevel()
+QVector<blockSettings*> CoreGame::setupLevel()
 {
-    QVector<int> blockSettings;
+    QVector<blockSettings*> blockSetting;
 
     // nb of blocks we will create on a level (1 to max block on a single block line)
     int nbBlockToCreate = randomGenerator(1, MAX_BLOCKLINE);
@@ -82,25 +82,37 @@ QVector<int> CoreGame::setupLevel()
         }
         // each block will have two settings : posX (we already know posY) and the number of bananas to
         // destroy it
-        for (int i = 0; i < nbBlockToCreate * 2; i += 2) {
+        for (int i = 0; i < nbBlockToCreate; i++) {
+            blockSettings * bS = new blockSettings();
+
             // set the position of the block (as the posx is set randomly, we don't want two blocks at the same position)
             int indice = randomGenerator(0, posXTable.size());
             int posX = posXTable[indice];
-            blockSettings.append(posX * BLOCK_SIZE);
+            bS->posX = posX * BLOCK_SIZE;
             posXTable.removeAt(indice);
 
             // chances the block may become a bonus block - a bonus block has no point
-            if (randomGenerator(0, 100) > 85) {
-                blockSettings[i] += BLOCK_SIZE/4;
-                blockSettings.append(0);
+            int bonus = randomGenerator(0, 100);
+            if (bonus > 85) {
+                bS->posX += BLOCK_SIZE/4;
+                bS->bonusType = MORE_BANANA_BONUS;
+                bS->point = 0;
+            } else if (bonus > 95) {
+                bS->bonusType = PADDLE_BONUS;
+                bS->point = 0;
+            } else if (bonus > 97) {
+                bS->bonusType = MORE_LIFE_BANANA_BONUS;
+                bS->point = 0;
             } else {
-                // set the points that the block will have
-                blockSettings.append(randomGenerator(1, dk->getNbBananas()));
+                // set the number of point the new block will have :
+                bS->bonusType = 0;
+                bS->point = randomGenerator(1, dk->getNbBananas());
             }
 
+            blockSetting.append(bS);
         }
     }
-    return blockSettings;
+    return blockSetting;
 }
 
 /**

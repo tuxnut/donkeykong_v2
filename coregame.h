@@ -28,7 +28,7 @@ public:
     int randomGenerator(int min, int max);
     void setupGame();
     int updateNbBananas();
-    QVector <int> setupLevel();
+    QVector<blockSettings *> setupLevel();
     bool monitorLevel(QList <Banana *> bananas);
     void gameCore(bool loadedGame = false);
     QString getPlayerName();

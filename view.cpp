@@ -31,6 +31,7 @@ View::View(QWidget *parent) :
     connect(this->monitoringTimer, SIGNAL(timeout()), this, SLOT(monitorLevel()));
 
     dk = nullptr;
+    paddle = false;
 }
 
 View::~View()
@@ -133,18 +134,34 @@ void View::displayLevel()
     }
 
     // ask the controler what to add to the view
-    QVector<int> blockSettings = this->control->setupLevel();
+    QVector<blockSettings*> bs = this->control->setupLevel();
 
-    if (blockSettings.isEmpty())
+    if (bs.isEmpty())
         return;
 
-    for (int i = 0; i < blockSettings.size(); i += 2) {
-        Block * block = new Block(blockSettings[i+1]);
-        if (blockSettings[i+1] == 0) {
-            block->setBonus(1);
-            block->setPos(blockSettings[i], TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-        } else {
-            block->setPos(blockSettings[i], TOP_LINE_HEIGHT);
+    for (int i = 0; i < bs.size(); i++) {
+        Block * block = new Block(bs[i]->point);
+
+        switch (bs[i]->bonusType) {
+        case 0:
+            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT);
+            break;
+        case MORE_BANANA_BONUS:
+            qDebug()<<"test";
+            block->setBonus(MORE_BANANA_BONUS);
+            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            break;
+        case PADDLE_BONUS:
+            block->setBonus(PADDLE_BONUS);
+            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            break;
+        case MORE_LIFE_BANANA_BONUS:
+            block->setBonus(MORE_LIFE_BANANA_BONUS);
+            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            break;
+        default:
+            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT);
+            break;
         }
 
         blocks->addToGroup(block);
@@ -372,7 +389,6 @@ bool View::playerLoadCheckpoint()
 void View::closeEvent(QCloseEvent * event)
 {
     int reply;
-    qDebug()<<(long)dk;
     if ((dk != nullptr) && dk->getLastCheckpoint() != dk->getScore()) {
         QString str = "Votre dernier checkpoint est au niveau "+ QString::number(dk->getLastCheckpoint()) +". Voulez-vous tout de meme fermer l'application ?";
         reply = QMessageBox::question(this, "Fermeture", str, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
@@ -381,13 +397,9 @@ void View::closeEvent(QCloseEvent * event)
     switch (reply) {
     case QMessageBox::Yes:
         scene->clear();
-        qDebug()<<"1";
         delete refreshTimer;
-        qDebug()<<"1";
         delete monitoringTimer;
-        qDebug()<<"1";
         control->closeCleanup();
-        qDebug()<<"1";
         event->accept();
         break;
     case QMessageBox::No:
@@ -397,6 +409,27 @@ void View::closeEvent(QCloseEvent * event)
         event->accept();
         break;
     }
+}
+
+/**
+ * @brief View::addPaddleBonus : add a paddle that the player can move to hit the bananas
+ */
+void View::addPaddleBonus()
+{
+    paddle = true;
+
+    // set a one time only Qtimer that will delete the paddle
+    QTimer * paddleTimer = new QTimer();
+    paddleTimer->setSingleShot(true);
+    paddleTimer->setInterval(LIFESPAN_PADDLE);
+    connect(paddleTimer, SIGNAL(timeout()), this, SLOT(removePaddle()));
+
+    // create and add the paddle to the scene
+    pad = new Paddle();
+    scene->addItem(pad);
+    scene->setFocusItem(pad);
+
+    paddleTimer->start();
 }
 
 ////////*** SLOTS ***/////////
@@ -492,6 +525,17 @@ void View::collision()
                         dk->setNbBananas();
                         incNbBananasBoard();
                         break;
+                    case PADDLE_BONUS:
+                        blocks->removeFromGroup(brik);
+                        scene->removeItem(brik);
+                        delete brik;
+                        addPaddleBonus();
+                        break;
+                    case MORE_LIFE_BANANA_BONUS:
+                        blocks->removeFromGroup(brik);
+                        scene->removeItem(brik);
+                        delete brik;
+                        break;
                     default:
                         break;
                     }
@@ -555,6 +599,15 @@ void View::thrower()
                 timerSender->stop();
         }
     }
+}
+
+/**
+ * @brief View::removePaddle : removes the paddle from the scene once its timer has timed out
+ */
+void View::removePaddle()
+{
+    paddle = false;
+    scene->removeItem(pad);
 }
 
 /**

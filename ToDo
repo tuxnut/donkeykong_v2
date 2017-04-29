@@ -7,7 +7,7 @@ Collisions des bananes avec des vecteurs de direction           OK - to be re ar
 Chargement et savegarde des parties en JSon                     OK
         ->régler la sauvegarde : pas faite dans le .dat !!!!    OK
 
-Meilleurs Scores                                                inProgress
+Meilleurs Scores                                                OK
         ->ui est dégueu : superposition des ui, boutin de retour useless, etc ...
     - nom des players ?                                         OK
 
@@ -27,7 +27,7 @@ Inter niveau                                                    OK
 Bonus                                                           inProgress
     - bananes en plus                                           OK
     - bananes rebondissantes sur le bas
-    - raquette pendant une durée
+    - raquette pendant une durée                                OK
     - etc ...
 
 Passer les blocksttings en QList<int> du controleur à la vue    OK

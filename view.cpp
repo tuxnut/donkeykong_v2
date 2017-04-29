@@ -74,6 +74,9 @@ void View::displayGame(Player *dk)
 {
     this->dk = dk;
 
+    // hide the menu
+    ui->centralWidget->setVisible(false);
+
     // setting up the QgraphicsView / Scene
     QGraphicsView * gameView = new QGraphicsView(scene, this);
     gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -108,6 +111,9 @@ void View::displayGame(Player *dk)
     dk->setFlag(QGraphicsItem::ItemIsFocusable);
     dk->setFocus();
     scene->addItem(dk);
+
+    // adding the paddle bonus
+    pad = new Paddle();
 
     // connect the signals to the view
     connect(dk, SIGNAL(leanRight()), this, SLOT(playerAxisLeanRight()));
@@ -147,7 +153,6 @@ void View::displayLevel()
             block->setPos(bs[i]->posX, TOP_LINE_HEIGHT);
             break;
         case MORE_BANANA_BONUS:
-            qDebug()<<"test";
             block->setBonus(MORE_BANANA_BONUS);
             block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
             break;
@@ -284,7 +289,6 @@ void View::gameOver()
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle("Game Over");
-    msgBox.setMinimumWidth(GAME_OVER_WIDTH);
     msgBox.setText("Your score : " + QString::number(dk->getScore()) +".");
     msgBox.setInformativeText("Your last checkpoint was level : " + QString::number(dk->getLastCheckpoint()) +".");
     msgBox.exec();
@@ -311,23 +315,21 @@ const QString View::getPlayerName()
  */
 void View::displayHighScores(const QVector<Qhighscore> highScores)
 {
-    QGraphicsView * gameView = new QGraphicsView(scene, this);
-    gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    gameView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    gameView->setFixedSize(VIEW_WIDTH, VIEW_HEIGHT);
-    scene->setSceneRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
-    gameView->setBackgroundBrush(QBrush(QPixmap(":/img/res/bck_img_game.png")));
+    // hide the menu interface
+    ui->centralWidget->setVisible(false);
 
-    gameView->show();
-
+    // load an ui file (as the ui file is in the ressource file (so it's built within the sources) the vieww handle the loading)
     QUiLoader loader;
-
     QFile file(":/form/highscore.ui");
     file.open(QFile::ReadOnly);
 
     QWidget * formWidget = loader.load(&file, this);
     file.close();
 
+    // set the background
+    formWidget->setStyleSheet("background-image: url(:/img/res/bck_img_game.png)");
+
+    // sets up the QLabel with the highscores
     for (int i = 0; i < 5; ++i) {
         QLabel * labelName = formWidget->findChild<QLabel*>("label_"+QString::number(i));
         labelName->setText(highScores[i].playerName);
@@ -335,6 +337,7 @@ void View::displayHighScores(const QVector<Qhighscore> highScores)
         labelScore->setText(QString::number(highScores[i].score));
     }
 
+    // return button to the main menu
     QPushButton * pushbutton = formWidget->findChild<QPushButton*>("pushButton");
     connect(pushbutton, SIGNAL(clicked(bool)), this, SLOT(setupui()));
 
@@ -424,23 +427,26 @@ void View::addPaddleBonus()
     paddleTimer->setInterval(LIFESPAN_PADDLE);
     connect(paddleTimer, SIGNAL(timeout()), this, SLOT(removePaddle()));
 
-    // create and add the paddle to the scene
-    pad = new Paddle();
+    //add the paddle to the scene
+    pad->setPos(PADDLE_POSX, PADDLE_POSY);
     scene->addItem(pad);
     scene->setFocusItem(pad);
 
     paddleTimer->start();
 }
 
-////////*** SLOTS ***/////////
+/////////*** SLOTS ***/////////
 
 /**
  * @brief View::setupui : loads the main menu ui
  */
 void View::setupui()
 {
-
-    ui->setupUi(this);
+    QPushButton * pushButton = qobject_cast<QPushButton*>(sender());
+    if (pushButton) {
+        pushButton->parentWidget()->deleteLater();
+        ui->centralWidget->setVisible(true);
+    }
 }
 
 /**
@@ -448,6 +454,7 @@ void View::setupui()
  */
 void View::on_pushButton_clicked()
 {
+    qDebug() << "ah";
     this->control->setupGame();
 }
 
@@ -516,6 +523,8 @@ void View::collision()
         else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
                 Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
+
+                // bonus block collision
                 if (brik->getBonusType() != 0) {
                     switch (brik->getBonusType()) {
                     case MORE_BANANA_BONUS:
@@ -563,6 +572,8 @@ void View::collision()
                         }
                     }
                 }
+            } else if (typeid(*(ban->collidingItems().first())) == typeid(Paddle)) {
+                ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
             }
         }
     }

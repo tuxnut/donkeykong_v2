@@ -68,6 +68,10 @@ int CoreGame::updateNbBananas()
     return qAbs(dk->getNbBananas() - view.getNbPixmapBanana());
 }
 
+/**
+ * @brief CoreGame::setupLevel : informs the view about how many blocks should be created for the level with their caracteristic (nb of points, bonu type, ...)
+ * @return QVector <blockSettings*> : the blockSettings structure contains all the data necessary to create a block : nb of points, pos-x, bonus type
+ */
 QVector<blockSettings*> CoreGame::setupLevel()
 {
     QVector<blockSettings*> blockSetting;
@@ -170,21 +174,31 @@ void CoreGame::gameCore(bool loadedGame)
     }
 }
 
+/**
+ * @brief CoreGame::getPlayerName : returns the name of the player (make the link between model and view)
+ * @return QString
+ */
 QString CoreGame::getPlayerName()
 {
     const QString &str = view.getPlayerName();
     return str;
 }
 
+/**
+ * @brief CoreGame::displayHighScores : search for the highscores towards the model and gives them to the view
+ */
 void CoreGame::displayHighScores()
 {
     QVector<Qhighscore> vectorQhighscore = model->getHighScores();
     if (vectorQhighscore.isEmpty())
         qWarning("couldn't parse the highscore file");
     else
-        view.displayHighScores(model->getHighScores());
+        view.displayHighScores(vectorQhighscore);
 }
 
+/**
+ * @brief CoreGame::closeCleanup : should clean up the memory before closing the app
+ */
 void CoreGame::closeCleanup()
 {
 //    free(dk);

@@ -44,7 +44,6 @@ int Block::getBonusType() const
  */
 void Block::setBonus(int type)
 {
-    qDebug()<<type;
     points = 0;
     textItem->setText("");
     setRect(0, 0, BLOCK_SIZE/2, BLOCK_SIZE/2);

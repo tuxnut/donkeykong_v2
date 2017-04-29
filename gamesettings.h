@@ -40,9 +40,8 @@
 #define LIFESPAN_PADDLE 15000
 #define PADDLE_WIDTH 100
 #define PADDLE_HEGHT 10
-
-// pop-up and messageBoxs settings
-#define GAME_OVER_WIDTH 200
+#define PADDLE_POSX 250
+#define PADDLE_POSY 735
 
 // define some data struct
 typedef struct Qhighscore {

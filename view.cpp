@@ -454,7 +454,6 @@ void View::setupui()
  */
 void View::on_pushButton_clicked()
 {
-    qDebug() << "ah";
     this->control->setupGame();
 }
 

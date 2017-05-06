@@ -44,7 +44,7 @@ void Banana::move()
     if (isThrown) {
         setPos(this->scenePos().x() + direction.x(), this->scenePos().y() + direction.y());
 //        setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
-        setRotation(rotation() + 10);
+//        setRotation(rotation() + 10);
     }
 }
 

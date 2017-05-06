@@ -98,13 +98,16 @@ QVector<blockSettings*> CoreGame::setupLevel()
             // chances the block may become a bonus block - a bonus block has no point
             int bonus = randomGenerator(0, 100);
             if (bonus > 85) {
+                qDebug()<<"bonus ball";
                 bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = MORE_BANANA_BONUS;
                 bS->point = 0;
             } else if (bonus > 95) {
+                qDebug()<<"bonus paddle";
                 bS->bonusType = PADDLE_BONUS;
                 bS->point = 0;
             } else if (bonus > 97) {
+                qDebug()<<"bonus more life banana";
                 bS->bonusType = MORE_LIFE_BANANA_BONUS;
                 bS->point = 0;
             } else {

@@ -5,7 +5,7 @@
 
 // banana settings
 #define BANANA_SIZE 20
-#define BANANAS_SPEED 30 // in px per frame
+#define BANANAS_SPEED 8 // in px per frame
 #define BANANA_SIZE 20
 #define INV_FPS 17      // 1/fps = 1/60 ~= 17ms
 

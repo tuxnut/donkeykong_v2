@@ -15,6 +15,7 @@ View::View(QWidget *parent) :
     ui(new Ui::View)
 {
     ui->setupUi(this);
+
     setFixedSize(VIEW_WIDTH, VIEW_HEIGHT);
     scene = new QGraphicsScene(this);
     blocks = new QGraphicsItemGroup();
@@ -445,6 +446,7 @@ void View::setupui()
     QPushButton * pushButton = qobject_cast<QPushButton*>(sender());
     if (pushButton) {
         pushButton->parentWidget()->deleteLater();
+        control->changeToMenuSound();
         ui->centralWidget->setVisible(true);
     }
 }

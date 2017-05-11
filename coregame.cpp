@@ -12,6 +12,10 @@ CoreGame::CoreGame(Model *model, View &view) :
     this->model = model;
     view.setControl(this);
     model->setControl(this);
+
+    musicPlayer = new QMediaPlayer();
+    musicPlayer->setMedia(QUrl("qrc:/sounds/res/rasputin_boneym.mp3"));
+    musicPlayer->play();
 }
 
 /**
@@ -29,6 +33,10 @@ void CoreGame::openGame(const QString &dir)
         gameCore(true);
     } else
         qWarning("Error loading saved game file");
+
+
+    musicPlayer->setMedia(QUrl("qrc:/sounds/res/gottagohome_boneym.mp3"));
+    musicPlayer->play();
 }
 
 /**
@@ -57,6 +65,9 @@ void CoreGame::setupGame()
 
     view.displayGame(dk);
     gameCore();
+
+    musicPlayer->setMedia(QUrl("qrc:/sounds/res/gottagohome_boneym.mp3"));
+    musicPlayer->play();
 }
 
 /**
@@ -97,17 +108,19 @@ QVector<blockSettings*> CoreGame::setupLevel()
 
             // chances the block may become a bonus block - a bonus block has no point
             int bonus = randomGenerator(0, 100);
-            if (bonus > 85) {
-                qDebug()<<"bonus ball";
+            if (bonus > 85 && bonus <= 95) {
+                qDebug()<<"bonus ball" << bonus;
                 bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = MORE_BANANA_BONUS;
                 bS->point = 0;
-            } else if (bonus > 95) {
-                qDebug()<<"bonus paddle";
+            } else if (bonus > 95 && bonus <= 97) {
+                qDebug()<<"bonus paddle" << bonus;
+                bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = PADDLE_BONUS;
                 bS->point = 0;
             } else if (bonus > 97) {
-                qDebug()<<"bonus more life banana";
+                qDebug()<<"bonus more life banana" << bonus;
+                bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = MORE_LIFE_BANANA_BONUS;
                 bS->point = 0;
             } else {
@@ -197,6 +210,16 @@ void CoreGame::displayHighScores()
         qWarning("couldn't parse the highscore file");
     else
         view.displayHighScores(vectorQhighscore);
+
+
+    musicPlayer->setMedia(QUrl("qrc:/sounds/res/sunny_boneym.mp3"));
+    musicPlayer->play();
+}
+
+void CoreGame::changeToMenuSound()
+{
+    musicPlayer->setMedia(QUrl("qrc:/sounds/res/rasputin_boneym.mp3"));
+    musicPlayer->play();
 }
 
 /**

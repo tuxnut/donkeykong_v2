@@ -3,11 +3,17 @@
         <file>res/bck_img_game.png</file>
         <file>res/img_banana_quad.png</file>
         <file>res/img_banana_simple.png</file>
+        <file>res/imgDKmenu.png</file>
     </qresource>
     <qresource prefix="/animations">
         <file>res/anim.gif</file>
     </qresource>
     <qresource prefix="/form">
         <file>highscore.ui</file>
+    </qresource>
+    <qresource prefix="/sounds">
+        <file>res/gottagohome_boneym.mp3</file>
+        <file>res/rasputin_boneym.mp3</file>
+        <file>res/sunny_boneym.mp3</file>
     </qresource>
 </RCC>

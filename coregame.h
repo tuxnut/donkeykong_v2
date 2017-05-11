@@ -10,6 +10,7 @@
 
 #include <random>
 #include <QTimer>
+#include <QMediaPlayer>
 
 class Model;
 class View;
@@ -21,6 +22,7 @@ private:
     Model *model;
     View &view;
     Player *dk;
+    QMediaPlayer * musicPlayer;
 
 public:
     CoreGame(Model *model, View &view);
@@ -33,6 +35,7 @@ public:
     void gameCore(bool loadedGame = false);
     QString getPlayerName();
     void displayHighScores();
+    void changeToMenuSound();
     void closeCleanup();
 };
 

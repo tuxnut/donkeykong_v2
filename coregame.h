@@ -5,7 +5,6 @@
 #include "view.h"
 #include "block.h"
 #include "player.h"
-#include "visitor.h"
 #include "gamesettings.h"
 
 #include <random>
@@ -15,6 +14,11 @@
 class Model;
 class View;
 
+/**
+ * @class The CoreGame class is the controler of our MVC application.
+ *  It contains our main loop, deals with passing information to displays to the view, information
+ *  harvested from the model. Also the player instance is stored here.
+ */
 class CoreGame
 {
 private:
@@ -23,11 +27,13 @@ private:
     View &view;
     Player *dk;
     QMediaPlayer * musicPlayer;
+    bool musicOn;
 
 public:
     CoreGame(Model *model, View &view);
     void openGame(const QString &dir);
     int randomGenerator(int min, int max);
+    bool changeMusicState();
     void setupGame();
     int updateNbBananas();
     QVector<blockSettings *> setupLevel();

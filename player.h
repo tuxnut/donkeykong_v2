@@ -8,6 +8,9 @@
 #include <QMovie>
 #include <QKeyEvent>
 
+/**
+ * @class The Player class depicts the behavior of the player, and contains its number of bananas, score and more.
+ */
 class Player : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT

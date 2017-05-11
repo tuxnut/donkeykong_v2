@@ -4,6 +4,8 @@
         <file>res/img_banana_quad.png</file>
         <file>res/img_banana_simple.png</file>
         <file>res/imgDKmenu.png</file>
+        <file>res/soundon.png</file>
+        <file>res/soundoff.png</file>
     </qresource>
     <qresource prefix="/animations">
         <file>res/anim.gif</file>

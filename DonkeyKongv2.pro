@@ -31,7 +31,6 @@ SOURCES += main.cpp\
     block.cpp \
     player.cpp \
     banana.cpp \
-    visitor.cpp \
     paddle.cpp
 
 HEADERS  += view.h \
@@ -40,7 +39,6 @@ HEADERS  += view.h \
     block.h \
     player.h \
     banana.h \
-    visitor.h \
     gamesettings.h \
     paddle.h
 

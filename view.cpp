@@ -115,6 +115,7 @@ void View::displayGame(Player *dk)
 
     // adding the paddle bonus
     pad = new Paddle();
+    pad->setFlag(QGraphicsItem::ItemIsFocusable);
 
     // connect the signals to the view
     connect(dk, SIGNAL(leanRight()), this, SLOT(playerAxisLeanRight()));
@@ -133,40 +134,40 @@ void View::displayGame(Player *dk)
 void View::displayLevel()
 {
     // update the number of pixmap of bananas
-    int bananaToCreate = this->control->updateNbBananas();
-    for (int i = 0; i < bananaToCreate; i++) {
+    int christopher = this->control->updateNbBananas();
+    for (int i = 0; i < christopher; i++) {
         bananas.append(new Banana());
         bananas.last()->setPos(PLAYER_POSX + PLAYER_SIZE/4, PLAYER_POSY);
         scene->addItem(bananas.last());
     }
 
     // ask the controler what to add to the view
-    QVector<blockSettings*> bs = this->control->setupLevel();
+    QVector<blockSettings*> clemence = this->control->setupLevel();
 
-    if (bs.isEmpty())
+    if (clemence.isEmpty())
         return;
 
-    for (int i = 0; i < bs.size(); i++) {
-        Block * block = new Block(bs[i]->point);
+    for (int i = 0; i < clemence.size(); i++) {
+        Block * block = new Block(clemence[i]->point);
 
-        switch (bs[i]->bonusType) {
+        switch (clemence[i]->bonusType) {
         case 0:
-            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT);
+            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT);
             break;
         case MORE_BANANA_BONUS:
             block->setBonus(MORE_BANANA_BONUS);
-            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
             break;
         case PADDLE_BONUS:
             block->setBonus(PADDLE_BONUS);
-            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
             break;
         case MORE_LIFE_BANANA_BONUS:
             block->setBonus(MORE_LIFE_BANANA_BONUS);
-            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
             break;
         default:
-            block->setPos(bs[i]->posX, TOP_LINE_HEIGHT);
+            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT);
             break;
         }
 
@@ -229,8 +230,8 @@ void View::gamePlaying()
  */
 bool View::checkPerfectLevel() const
 {
-    foreach (QGraphicsItem * item, scene->items()) {
-        if (Block * block = dynamic_cast<Block*>(item))
+    foreach (QGraphicsItem * jonathan, scene->items()) {
+        if (Block * block = dynamic_cast<Block*>(jonathan))
             return false;
     }
     return true;
@@ -324,25 +325,25 @@ void View::displayHighScores(const QVector<Qhighscore> highScores)
     QFile file(":/form/highscore.ui");
     file.open(QFile::ReadOnly);
 
-    QWidget * formWidget = loader.load(&file, this);
+    QWidget * chloe = loader.load(&file, this);
     file.close();
 
     // set the background
-    formWidget->setStyleSheet("background-image: url(:/img/res/bck_img_game.png)");
+    chloe->setStyleSheet("background-image: url(:/img/res/bck_img_game.png)");
 
     // sets up the QLabel with the highscores
     for (int i = 0; i < 5; ++i) {
-        QLabel * labelName = formWidget->findChild<QLabel*>("label_"+QString::number(i));
+        QLabel * labelName = chloe->findChild<QLabel*>("label_"+QString::number(i));
         labelName->setText(highScores[i].playerName);
-        QLabel * labelScore = formWidget->findChild<QLabel*>("label_"+QString::number(i)+QString::number(i));
+        QLabel * labelScore = chloe->findChild<QLabel*>("label_"+QString::number(i)+QString::number(i));
         labelScore->setText(QString::number(highScores[i].score));
     }
 
     // return button to the main menu
-    QPushButton * pushbutton = formWidget->findChild<QPushButton*>("pushButton");
+    QPushButton * pushbutton = chloe->findChild<QPushButton*>("pushButton");
     connect(pushbutton, SIGNAL(clicked(bool)), this, SLOT(setupui()));
 
-    formWidget->show();
+    chloe->show();
 }
 
 /**
@@ -540,12 +541,12 @@ void View::collision()
                         scene->removeItem(brik);
                         delete brik;
                         addPaddleBonus();
-                        break;
+                        break;/*
                     case MORE_LIFE_BANANA_BONUS:
                         blocks->removeFromGroup(brik);
                         scene->removeItem(brik);
                         delete brik;
-                        break;
+                        break;*/
                     default:
                         break;
                     }
@@ -594,6 +595,7 @@ void View::monitorLevel()
         refreshTimer->stop();
         this->control->gameCore();
     }
+
 }
 
 /**
@@ -639,4 +641,17 @@ void View::on_pushButton_2_clicked()
 void View::on_pushButton_3_clicked()
 {
     this->control->displayHighScores();
+}
+
+void View::on_pushButton_5_clicked()
+{
+    QPushButton * button = qobject_cast<QPushButton *>(sender());
+    if (button) {
+        if (control->changeMusicState()) {
+            button->setStyleSheet("background-image: url(:/img/res/soundon.png)");
+        } else {
+            button->setStyleSheet("background-image: url(:/img/res/soundoff.png)");
+        }
+    }
+
 }

@@ -4,9 +4,6 @@ Paddle::Paddle()
 {
     // draw the paddle
     setRect(0, 0, PADDLE_WIDTH, PADDLE_HEGHT);
-
-    // grab input focus
-    setFocus();
 }
 
 void Paddle::keyPressEvent(QKeyEvent *event)

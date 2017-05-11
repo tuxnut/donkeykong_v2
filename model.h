@@ -13,6 +13,9 @@
 class Player;
 class CoreGame;
 
+/**
+ * @class The Model class deals with I/O interfaces. Most of the files dealt with are binary written JSON files.
+ */
 class Model
 {
 private:

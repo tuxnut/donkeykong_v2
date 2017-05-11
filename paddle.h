@@ -7,6 +7,9 @@
 #include <QKeyEvent>
 #include "gamesettings.h"
 
+/**
+ * @class The Paddle class depicts the behavior of the paddle within the game
+ */
 class Paddle : public QGraphicsRectItem
 {
 public:

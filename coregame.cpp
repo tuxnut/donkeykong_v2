@@ -34,9 +34,10 @@ void CoreGame::openGame(const QString &dir)
     } else
         qWarning("Error loading saved game file");
 
-
-    musicPlayer->setMedia(QUrl("qrc:/sounds/res/gottagohome_boneym.mp3"));
-    musicPlayer->play();
+    if (musicOn) {
+        musicPlayer->setMedia(QUrl("qrc:/sounds/res/gottagohome_boneym.mp3"));
+        musicPlayer->play();
+    }
 }
 
 /**
@@ -47,10 +48,27 @@ void CoreGame::openGame(const QString &dir)
  */
 int CoreGame::randomGenerator(int min, int max)
 {
-    std::random_device rd;
-    std::mt19937 mt(rd());
+    std::random_device herry;
+    std::mt19937 mt(herry());
     std::uniform_real_distribution<double> dist(min, std::nextafter(max, INT_MAX));
     return qAbs(dist(mt));
+}
+
+/**
+ * @brief CoreGame::setMusic : demute/mute the player
+ * @param enable
+ */
+bool CoreGame::changeMusicState()
+{
+    if (musicOn) {
+        musicPlayer->stop();
+        musicOn = false;
+    } else {
+        musicOn = true;
+        musicPlayer->play();
+    }
+
+    return musicOn;
 }
 
 /**
@@ -66,8 +84,10 @@ void CoreGame::setupGame()
     view.displayGame(dk);
     gameCore();
 
-    musicPlayer->setMedia(QUrl("qrc:/sounds/res/gottagohome_boneym.mp3"));
-    musicPlayer->play();
+    if (musicOn) {
+        musicPlayer->setMedia(QUrl("qrc:/sounds/res/gottagohome_boneym.mp3"));
+        musicPlayer->play();
+    }
 }
 
 /**
@@ -107,23 +127,21 @@ QVector<blockSettings*> CoreGame::setupLevel()
             posXTable.removeAt(indice);
 
             // chances the block may become a bonus block - a bonus block has no point
-            int bonus = randomGenerator(0, 100);
-            if (bonus > 85 && bonus <= 95) {
-                qDebug()<<"bonus ball" << bonus;
+            int pauline = randomGenerator(0, 100);
+            if (pauline > 87 && pauline <= 97) {
                 bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = MORE_BANANA_BONUS;
                 bS->point = 0;
-            } else if (bonus > 95 && bonus <= 97) {
-                qDebug()<<"bonus paddle" << bonus;
+            } else if (pauline > 97) {
                 bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = PADDLE_BONUS;
                 bS->point = 0;
-            } else if (bonus > 97) {
+            /*} else if (bonus > 97) {
                 qDebug()<<"bonus more life banana" << bonus;
                 bS->posX += BLOCK_SIZE/4;
                 bS->bonusType = MORE_LIFE_BANANA_BONUS;
                 bS->point = 0;
-            } else {
+            */} else {
                 // set the number of point the new block will have :
                 bS->bonusType = 0;
                 bS->point = randomGenerator(1, dk->getNbBananas());
@@ -211,15 +229,21 @@ void CoreGame::displayHighScores()
     else
         view.displayHighScores(vectorQhighscore);
 
-
-    musicPlayer->setMedia(QUrl("qrc:/sounds/res/sunny_boneym.mp3"));
-    musicPlayer->play();
+    if (musicOn) {
+        musicPlayer->setMedia(QUrl("qrc:/sounds/res/sunny_boneym.mp3"));
+        musicPlayer->play();
+    }
 }
 
+/**
+ * @brief CoreGame::changeToMenuSound : change the background music
+ */
 void CoreGame::changeToMenuSound()
 {
-    musicPlayer->setMedia(QUrl("qrc:/sounds/res/rasputin_boneym.mp3"));
-    musicPlayer->play();
+    if (musicOn) {
+        musicPlayer->setMedia(QUrl("qrc:/sounds/res/rasputin_boneym.mp3"));
+        musicPlayer->play();
+    }
 }
 
 /**

@@ -14,15 +14,16 @@
 #define VIEW_WIDTH 600
 #define BOTTOM_LINE_HEIGHT 750
 #define TOP_LINE_HEIGHT 50
+#define MAX_BLOCKLINE 12
+#define BLOCK_DESTR_POSX 425
+
+// player settings
 #define PLAYER_POSX 275
 #define PLAYER_POSY 700
 #define PLAYER_SIZE 50
 #define MAX_ROTATION 80 // of the axis while rotating
 #define AXIS_OFFSET 90  // since its vertical at the initialization
-#define MAX_BLOCKLINE 12
-#define BLOCK_DESTR_POSX 425
-
-// player settings
+#define AXIS_TOP 350
 #define BANANAS_DEFAULT 1;
 
 // timer settings

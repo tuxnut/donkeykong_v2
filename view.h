@@ -37,6 +37,7 @@ public:
     explicit View(QWidget *parent = 0);
     ~View();
     Player * getPlayer();
+    bool getPaddleState();
     int getNbPixmapBanana();
     void setControl(CoreGame *control);
     void displayGame(Player *dk);
@@ -57,6 +58,9 @@ public:
     void closeEvent(QCloseEvent *event);
     void addPaddleBonus();
 
+public slots:
+    void removePaddle();
+
 private slots:
     void setupui();
     void on_pushButton_clicked();
@@ -66,11 +70,9 @@ private slots:
     void collision();
     void monitorLevel();
     void thrower();
-    void removePaddle();
     void on_pushButton_4_clicked();
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
-
     void on_pushButton_5_clicked();
 
 private:

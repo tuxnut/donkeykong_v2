@@ -164,6 +164,10 @@ bool CoreGame::monitorLevel(QList<Banana *> bananas)
         if (ban->thrownStatus())
             return false;
     }
+
+    if (view.getPaddleState())
+        view.removePaddle();
+
     return true;
 }
 
@@ -186,7 +190,7 @@ void CoreGame::gameCore(bool loadedGame)
     // reposition the player and its bananas
     view.repositionPlayer();
 
-    // basivally our condition whether it's game over or not
+    // basically our condition whether it's game over or not
     if (view.lowerBlocks()) {
         // game continues
         dk->setScore();

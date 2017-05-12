@@ -50,6 +50,15 @@ Player *View::getPlayer()
 }
 
 /**
+ * @brief View::getPaddleState : return true if the paddle is still displaying, false otherwise
+ * @return
+ */
+bool View::getPaddleState()
+{
+    return paddle;
+}
+
+/**
  * @brief View::setControl : so the controler and the view get to know each other
  * @param control
  */
@@ -162,10 +171,10 @@ void View::displayLevel()
             block->setBonus(PADDLE_BONUS);
             block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
             break;
-        case MORE_LIFE_BANANA_BONUS:
+        /*case MORE_LIFE_BANANA_BONUS:
             block->setBonus(MORE_LIFE_BANANA_BONUS);
             block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-            break;
+            break;*/
         default:
             block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT);
             break;
@@ -182,7 +191,7 @@ void View::playerAction()
 {
     scene->clearFocus();
     scene->setFocusItem(dk);
-    playerAxis->setLine(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY, dk->pos().x() + PLAYER_SIZE/2, TOP_LINE_HEIGHT);
+    playerAxis->setLine(dk->pos().x() + PLAYER_SIZE/2, PLAYER_POSY, dk->pos().x() + PLAYER_SIZE/2, AXIS_TOP);
     playerAxis->setVisible(true);
 }
 
@@ -223,6 +232,7 @@ void View::gamePlaying()
     // detect the end of level
     monitoringTimer->start();
 }
+
 
 /**
  * @brief View::checkLevel : checks if the level was completed perfectly (eg all the block have been destroyed)
@@ -620,8 +630,10 @@ void View::thrower()
  */
 void View::removePaddle()
 {
-    paddle = false;
-    scene->removeItem(pad);
+    if (paddle) {
+        paddle = false;
+        scene->removeItem(pad);
+    }
 }
 
 /**

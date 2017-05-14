@@ -9,7 +9,7 @@
 #include <QTimer>
 
 /**
- * @class The Banana class depicts the projectile the player thows
+ * @brief The Banana class depicts the projectile the player thows
  * Basically, they move thanks to a Qtimer.
  */
 class Banana : public QObject, public QGraphicsPixmapItem

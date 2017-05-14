@@ -15,7 +15,7 @@ class Model;
 class View;
 
 /**
- * @class The CoreGame class is the controler of our MVC application.
+ * @brief The CoreGame class is the controler of our MVC application.
  *  It contains our main loop, deals with passing information to displays to the view, information
  *  harvested from the model. Also the player instance is stored here.
  */

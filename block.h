@@ -8,7 +8,7 @@
 #include <QPainter>
 
 /**
- * @class The Block class depicts the behavior of the blocks
+ * @brief The Block class depicts the behavior of the blocks
  */
 class Block : public QObject, public QGraphicsRectItem
 {

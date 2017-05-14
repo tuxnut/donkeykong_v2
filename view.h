@@ -27,7 +27,7 @@ class View;
 }
 
 /**
- * @class The View class deals with displaying everything
+ * @brief The View class deals with displaying everything
  */
 class View : public QMainWindow
 {

@@ -33,7 +33,7 @@ void Banana::setDirection(const float x, const float y)
 
 const QPointF Banana::getCenter()
 {
-    return QPointF(scenePos().x() + BANANA_SIZE/2, scenePos().y() + BANANA_SIZE/2);
+    return QPointF(sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 135)), sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 45)));
 }
 
 bool Banana::thrownStatus() const
@@ -43,11 +43,18 @@ bool Banana::thrownStatus() const
 
 void Banana::move()
 {
+//    QGraphicsRectItem * rect = new QGraphicsRectItem(this);
+//    QGraphicsRectItem * rect2 = new QGraphicsRectItem(this);
+//    rect->setRect(this->boundingRect());
+//    rect2->setRect(getCenter().x(),getCenter().y(),1,1);
     if (isThrown) {
-        setPos(this->scenePos().x() + direction.x(), this->scenePos().y() + direction.y());
-//        setTransformOriginPoint();
-//        setRotation(rotation() + 1);
+        setPos(scenePos() + getDirection());
+
+//        setTransformOriginPoint(getCenter());
+//        setRotation(rotation() + 3);
     }
+
+//    qDebug()<< ;
 }
 
 void Banana::throwing()

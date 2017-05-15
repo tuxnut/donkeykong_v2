@@ -16,6 +16,7 @@ CoreGame::CoreGame(Model *model, View &view) :
     musicPlayer = new QMediaPlayer();
     musicPlayer->setMedia(QUrl("qrc:/sounds/res/rasputin_boneym.mp3"));
     musicPlayer->play();
+    musicOn = true;
 }
 
 /**

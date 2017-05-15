@@ -7,6 +7,7 @@
 #include <QGraphicsPixmapItem>
 #include <QVector2D>
 #include <QTimer>
+#include <QtMath>
 
 /**
  * @brief The Banana class depicts the projectile the player thows

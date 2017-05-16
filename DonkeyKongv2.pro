@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     block.cpp \
     player.cpp \
     banana.cpp \
-    paddle.cpp
+    paddle.cpp \
+    bonusblock.cpp
 
 HEADERS  += view.h \
     coregame.h \
@@ -40,7 +41,8 @@ HEADERS  += view.h \
     player.h \
     banana.h \
     gamesettings.h \
-    paddle.h
+    paddle.h \
+    bonusblock.h
 
 FORMS    += view.ui \
     highscore.ui

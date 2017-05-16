@@ -13,7 +13,7 @@
 class Block : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
-private:
+protected:
     QGraphicsSimpleTextItem * textItem;
     int points;
     int bonus;

@@ -38,7 +38,7 @@
 #define MORE_LIFE_BANANA_BONUS 3
 
 // paddle settings
-#define LIFESPAN_PADDLE 15000
+#define LIFESPAN_PADDLE 130000
 #define PADDLE_WIDTH 100
 #define PADDLE_HEGHT 10
 #define PADDLE_POSX 250

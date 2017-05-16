@@ -2,6 +2,7 @@
 #define VIEW_H
 
 #include "block.h"
+#include "bonusblock.h"
 #include "player.h"
 #include "unistd.h"
 #include "banana.h"

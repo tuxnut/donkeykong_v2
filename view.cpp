@@ -157,30 +157,41 @@ void View::displayLevel()
         return;
 
     for (int i = 0; i < clemence.size(); i++) {
-        Block * block = new Block(clemence[i]->point);
+//        Block * block = new Block(clemence[i]->point);
 
         switch (clemence[i]->bonusType) {
         case 0:
+        {
+            Block * block = new Block(clemence[i]->point);
             block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT);
-            break;
-        case MORE_BANANA_BONUS:
-            block->setBonus(MORE_BANANA_BONUS);
-            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-            break;
-        case PADDLE_BONUS:
-            block->setBonus(PADDLE_BONUS);
-            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-            break;
-        /*case MORE_LIFE_BANANA_BONUS:
-            block->setBonus(MORE_LIFE_BANANA_BONUS);
-            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
-            break;*/
-        default:
-            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT);
+            blocks->addToGroup(block);
             break;
         }
-
-        blocks->addToGroup(block);
+        case MORE_BANANA_BONUS:
+        {
+            BonusBlock * bonblock = new BonusBlock(MORE_BANANA_BONUS);
+            bonblock->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            blocks->addToGroup(bonblock);
+            break;
+        }
+        case PADDLE_BONUS:
+        {
+            BonusBlock * bonblock = new BonusBlock(PADDLE_BONUS);
+            bonblock->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            blocks->addToGroup(bonblock);
+            break;
+        }
+        case MORE_LIFE_BANANA_BONUS:
+        {
+            BonusBlock * bonblock = new BonusBlock(MORE_LIFE_BANANA_BONUS);
+            bonblock->setPos(clemence[i]->posX, TOP_LINE_HEIGHT + BLOCK_SIZE/4);
+            blocks->addToGroup(bonblock);
+            break;
+        }
+        default:
+//            block->setPos(clemence[i]->posX, TOP_LINE_HEIGHT);
+            break;
+        }
     }
 }
 
@@ -433,7 +444,7 @@ void View::addPaddleBonus()
 {
     paddle = true;
 
-    // set a one time only Qtimer that will delete the paddle
+    // set a single shot Qtimer that will delete the paddle
     QTimer * paddleTimer = new QTimer();
     paddleTimer->setSingleShot(true);
     paddleTimer->setInterval(LIFESPAN_PADDLE);
@@ -536,55 +547,55 @@ void View::collision()
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
                 Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
 
-                // bonus block collision
-                if (brik->getBonusType() != 0) {
-                    switch (brik->getBonusType()) {
-                    case MORE_BANANA_BONUS:
+                // top / bottom block collision
+                if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
+                    ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+                    if (brik->decPoints()) {
                         blocks->removeFromGroup(brik);
                         scene->removeItem(brik);
                         delete brik;
-                        dk->setNbBananas();
-                        incNbBananasBoard();
-                        break;
-                    case PADDLE_BONUS:
-                        blocks->removeFromGroup(brik);
-                        scene->removeItem(brik);
-                        delete brik;
-                        addPaddleBonus();
-                        break;/*
-                    case MORE_LIFE_BANANA_BONUS:
-                        blocks->removeFromGroup(brik);
-                        scene->removeItem(brik);
-                        delete brik;
-                        break;*/
-                    default:
-                        break;
-                    }
-                } else {
-                    // top / bottom block collision
-                    if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
-                        ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
-                        if (brik->decPoints()) {
-                            blocks->removeFromGroup(brik);
-                            scene->removeItem(brik);
-                            delete brik;
-                            dk->setNbBlockDestroyed();
-                            incNbBlockDestrBoard();
-                        }
-                    }
-                    // right / left block collision
-                    else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
-                        ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
-                        if (brik->decPoints()) {
-                            blocks->removeFromGroup(brik);
-                            scene->removeItem(brik);
-                            delete brik;
-                            dk->setNbBlockDestroyed();
-                            incNbBlockDestrBoard();
-                        }
+                        dk->setNbBlockDestroyed();
+                        incNbBlockDestrBoard();
                     }
                 }
-            } else if (typeid(*(ban->collidingItems().first())) == typeid(Paddle)) {
+                // right / left block collision
+                else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
+                    ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+                    if (brik->decPoints()) {
+                        blocks->removeFromGroup(brik);
+                        scene->removeItem(brik);
+                        delete brik;
+                        dk->setNbBlockDestroyed();
+                        incNbBlockDestrBoard();
+                    }
+                }
+            } else if (typeid(*(ban->collidingItems().first())) == typeid(BonusBlock)) {
+                BonusBlock * gBlanc = dynamic_cast<BonusBlock*>(ban->collidingItems().first());
+
+                // bonus block collision
+                switch (gBlanc->getBonusType()) {
+                case MORE_BANANA_BONUS:
+                    blocks->removeFromGroup(gBlanc);
+                    scene->removeItem(gBlanc);
+                    delete gBlanc;
+                    dk->setNbBananas();
+                    incNbBananasBoard();
+                    break;
+                case PADDLE_BONUS:
+                    blocks->removeFromGroup(gBlanc);
+                    scene->removeItem(gBlanc);
+                    delete gBlanc;
+                    addPaddleBonus();
+                    break;
+                case MORE_LIFE_BANANA_BONUS:
+                    blocks->removeFromGroup(gBlanc);
+                    scene->removeItem(gBlanc);
+                    delete gBlanc;
+                    break;
+                default:
+                    break;
+                }
+             } else if (typeid(*(ban->collidingItems().first())) == typeid(Paddle)) {
                 ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
             }
         }

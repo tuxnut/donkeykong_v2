@@ -52,19 +52,7 @@ void Block::setBonus(int type)
 
 void Block::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if (bonus == MORE_BANANA_BONUS) {
-        QPen pen(Qt::red, 2);
-        painter->setPen(pen);
-        painter->drawEllipse(this->rect());
-    } else if (bonus == PADDLE_BONUS){
-        QPen pen(Qt::blue, 2);
-        painter->setPen(pen);
-        painter->drawEllipse(this->rect());
-    } else if (bonus == MORE_LIFE_BANANA_BONUS){
-        QPen pen(Qt::green, 2);
-        painter->setPen(pen);
-        painter->drawEllipse(this->rect());
-    } else if (0 < points && points < 10) {
+    if (0 < points && points < 10) {
         QPen pen(Qt::red, 1);
         painter->setPen(pen);
         painter->drawRect(this->rect());
@@ -74,5 +62,10 @@ void Block::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         painter->setPen(pen);
         painter->drawRect(this->rect());
         painter->fillRect(this->rect(), Qt::darkCyan);
+    } else if (20 <= points) {
+        QPen pen(Qt::green, 1);
+        painter->setPen(pen);
+        painter->drawRect(this->rect());
+        painter->fillRect(this->rect(), Qt::magenta);
     }
 }

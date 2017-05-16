@@ -526,8 +526,8 @@ void View::startPlaying()
  */
 void View::collision()
 {
-//    QElapsedTimer timer;
-//    timer.start();
+    QElapsedTimer timer;
+    timer.start();
     // detection of collision with the edges of the playground
     foreach (Banana * ban, bananas) {
         // left edge
@@ -600,8 +600,8 @@ void View::collision()
             }
         }
     }
-//    qDebug()<<timer.nsecsElapsed();
-//     max : 100 microseconds (PC) /
+    qDebug()<<timer.nsecsElapsed();
+//     max : 100 microseconds (PC) /-/ 328,522 microseconds (laptop)
     return;
 }
 

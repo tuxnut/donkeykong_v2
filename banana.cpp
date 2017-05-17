@@ -20,17 +20,6 @@ Banana::Banana(QObject *parent) : QObject(parent)
     connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
 }
 
-const QPointF Banana::getDirection()
-{
-    return this->direction.toPointF();
-}
-
-void Banana::setDirection(const float x, const float y)
-{
-    this->direction.setX(x);
-    this->direction.setY(y);
-}
-
 const QPointF Banana::getCenter()
 {
     return QPointF(sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 135)), sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 45)));

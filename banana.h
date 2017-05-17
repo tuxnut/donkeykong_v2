@@ -24,8 +24,11 @@ private:
 
 public:
     explicit Banana(QObject *parent = 0);
-    const QPointF getDirection();
-    void setDirection(const float x, const float y);
+    inline const QPointF getDirection() { return this->direction.toPointF(); }
+    inline void setDirection(const float x, const float y) {
+        this->direction.setX(x);
+        this->direction.setY(y);
+    }
     const QPointF getCenter();
     bool thrownStatus() const;
 

@@ -23,21 +23,6 @@ Block::Block(int points)
     textItem = new QGraphicsSimpleTextItem(QString::number(this->points), this);
 }
 
-bool Block::decPoints()
-{
-    points--;
-    textItem->setText(QString::number(this->points));
-    if (points == 0)
-        return true;
-    else
-        return false;
-}
-
-int Block::getBonusType() const
-{
-    return bonus;
-}
-
 /**
  * @brief Block::setBonus : set a bonus for the block instead a a classic block
  * @param type : set the type of bonus for the block

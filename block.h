@@ -21,8 +21,15 @@ protected:
 public:
     explicit Block(QObject *parent = 0);
     Block(int points);
-    bool decPoints();
-    int getBonusType() const;
+    inline bool decPoints() {
+        points--;
+        textItem->setText(QString::number(this->points));
+        if (points == 0)
+            return true;
+        else
+            return false;
+    }
+    inline int getBonusType() const { return bonus; }
     void setBonus(int type);
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
 

@@ -523,6 +523,8 @@ void View::startPlaying()
  * Then we check with the block positions :
  *      - if the block is a bonus block, get the bonus then continues with the same direction
  *      - otherwise we check if the banana collides with the top/bottom sides or the left/right sides
+ * An effort has been made to put the vast majority of the calls to functions and methods in this function as
+ * inline, letting the optimizer do his work (whether or not putting the lines codes directly in this method)
  */
 void View::collision()
 {

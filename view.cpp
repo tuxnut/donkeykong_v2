@@ -533,25 +533,25 @@ void View::collision()
     // detection of collision with the edges of the playground
     foreach (Banana * ban, bananas) {
         // left edge
-        if (ban->scenePos().x() + ban->getDirection().x() < 0) {
-            ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+        if (ban->scenePos().x() + ban->getDirectionToPointF().x() < 0) {
+            ban->setDirection(-ban->getDirectionToPointF().x(), ban->getDirectionToPointF().y());
         } // right edge
-        else if (ban->scenePos().x() + BANANA_SIZE + ban->getDirection().x() > VIEW_WIDTH) {
-            ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+        else if (ban->scenePos().x() + BANANA_SIZE + ban->getDirectionToPointF().x() > VIEW_WIDTH) {
+            ban->setDirection(-ban->getDirectionToPointF().x(), ban->getDirectionToPointF().y());
         } // top edge
-        else if (ban->scenePos().y() + ban->getDirection().y() < TOP_LINE_HEIGHT) {
-            ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+        else if (ban->scenePos().y() + ban->getDirectionToPointF().y() < TOP_LINE_HEIGHT) {
+            ban->setDirection(ban->getDirectionToPointF().x(), -ban->getDirectionToPointF().y());
         } // bottom edge
-        else if (ban->scenePos().y() + BANANA_SIZE/2 + ban->getDirection().y() > BOTTOM_LINE_HEIGHT) {
+        else if (ban->scenePos().y() + BANANA_SIZE/2 + ban->getDirectionToPointF().y() > BOTTOM_LINE_HEIGHT) {
             ban->crash();
         } // block collisions
         else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
                 Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
-
+                /*
                 // top / bottom block collision
                 if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
-                    ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+                    ban->setDirection(ban->getDirectionToPointF().x(), -ban->getDirectionToPointF().y());
                     if (brik->decPoints()) {
                         blocks->removeFromGroup(brik);
                         scene->removeItem(brik);
@@ -562,7 +562,7 @@ void View::collision()
                 }
                 // right / left block collision
                 else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
-                    ban->setDirection(-ban->getDirection().x(), ban->getDirection().y());
+                    ban->setDirection(-ban->getDirectionToPointF().x(), ban->getDirectionToPointF().y());
                     if (brik->decPoints()) {
                         blocks->removeFromGroup(brik);
                         scene->removeItem(brik);
@@ -570,6 +570,16 @@ void View::collision()
                         dk->setNbBlockDestroyed();
                         incNbBlockDestrBoard();
                     }
+                }
+                */
+                QVector2D newdir = control->computeAngle(ban->scenePos(), brik->scenePos(), ban->getDirection());
+                ban->setDirection(newdir);
+                if (brik->decPoints()) {
+                    blocks->removeFromGroup(brik);
+                    scene->removeItem(brik);
+                    delete brik;
+                    dk->setNbBlockDestroyed();
+                    incNbBlockDestrBoard();
                 }
             } else if (typeid(*(ban->collidingItems().first())) == typeid(BonusBlock)) {
                 BonusBlock * gBlanc = dynamic_cast<BonusBlock*>(ban->collidingItems().first());
@@ -598,7 +608,7 @@ void View::collision()
                     break;
                 }
              } else if (typeid(*(ban->collidingItems().first())) == typeid(Paddle)) {
-                ban->setDirection(ban->getDirection().x(), -ban->getDirection().y());
+                ban->setDirection(ban->getDirectionToPointF().x(), -ban->getDirectionToPointF().y());
             }
         }
     }

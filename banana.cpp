@@ -12,17 +12,12 @@ Banana::Banana(QObject *parent) : QObject(parent)
     this->direction.setX(0);
     this->direction.setY(-BANANAS_SPEED);
 
-    setTransformOriginPoint(getCenter());
+//    setTransformOriginPoint(getCenter());
 
     // connect timer for moving the banana
     moveTimer = new QTimer();
     moveTimer->setInterval(INV_FPS);
     connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
-}
-
-const QPointF Banana::getCenter()
-{
-    return QPointF(sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 135)), sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 45)));
 }
 
 bool Banana::thrownStatus() const
@@ -37,7 +32,7 @@ void Banana::move()
 //    rect->setRect(this->boundingRect());
 //    rect2->setRect(getCenter().x(),getCenter().y(),1,1);
     if (isThrown) {
-        setPos(scenePos() + getDirection());
+        setPos(scenePos() + getDirectionToPointF());
 
 //        setTransformOriginPoint(getCenter());
 //        setRotation(rotation() + 3);

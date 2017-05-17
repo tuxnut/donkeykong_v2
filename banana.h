@@ -24,12 +24,20 @@ private:
 
 public:
     explicit Banana(QObject *parent = 0);
-    inline const QPointF getDirection() { return this->direction.toPointF(); }
+    inline const QPointF getDirectionToPointF() { return this->direction.toPointF(); }
+    inline const QVector2D getDirection() { return this->direction; }
+    inline void setDirection(const QVector2D newDirection) {
+        this->direction = newDirection;
+    }
     inline void setDirection(const float x, const float y) {
         this->direction.setX(x);
         this->direction.setY(y);
     }
-    const QPointF getCenter();
+//    inline const QPointF getCenter() {
+//        return QPointF (scenePos.x() + BANANA_SIZE/2, scenePos.y() + BANANA_SIZE/2);
+//        QPointF(sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 135)), sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 45)));
+//    }
+
     bool thrownStatus() const;
 
 signals:

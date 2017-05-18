@@ -58,19 +58,38 @@ const QVector2D CoreGame::computeAngle(QPointF ban, QPointF bloc, const QVector2
     bloc.rx() += BLOCK_SIZE/2;
 
     // top / bottom collision
-    if ((ban.x() < bloc.x() + BLOCK_SIZE/2 - 5) && (ban.x() > bloc.x() - BLOCK_SIZE/2 + 5)/* && ((ban.y() > bloc.y() + BLOCK_SIZE/2) || (ban.y() < bloc.y() - BLOCK_SIZE/2))*/) {
+    if ((ban.x() < bloc.x() + BLOCK_SIZE/2 - 5) && (ban.x() > bloc.x() - BLOCK_SIZE/2 + 5) && ((ban.y() > bloc.y() + BLOCK_SIZE/2) || (ban.y() < bloc.y() - BLOCK_SIZE/2))) {
         res.setX(dir.x());
         res.setY(-1 * dir.y());
         return res;
     }
     // right / left collision
-    if ((ban.y() < bloc.y() + BLOCK_SIZE/2 - 5) && (ban.y() > bloc.y() - BLOCK_SIZE/2 + 5)/* && ((ban.x() > bloc.x() + BLOCK_SIZE/2) || (ban.x() < bloc.x() - BLOCK_SIZE/2))*/) {
+    if ((ban.y() < bloc.y() + BLOCK_SIZE/2 - 5) && (ban.y() > bloc.y() - BLOCK_SIZE/2 + 5) && ((ban.x() > bloc.x() + BLOCK_SIZE/2) || (ban.x() < bloc.x() - BLOCK_SIZE/2))) {
         res.setX(-1 * dir.x());
         res.setY(dir.y());
         return res;
     }
+    //bottom-left collision
+    if ((ban.y() >= bloc.y() + BLOCK_SIZE/2 - 5) && (ban.x() <= bloc.x() - BLOCK_SIZE/2 + 5)) {
 
-    return res;
+        return res;
+    }
+    //bottom-right collision
+    if ((ban.y() >= bloc.y() + BLOCK_SIZE/2 - 5) && (ban.x() >= bloc.x() + BLOCK_SIZE/2 - 5)) {
+
+        return res;
+    }
+    //top-left collision
+    if ((ban.y() <= bloc.y() - BLOCK_SIZE/2 + 5) && (ban.x() <= bloc.x() - BLOCK_SIZE/2 + 5)) {
+
+        return res;
+    }
+    //top-right collision
+    if ((ban.y() <= bloc.y() - BLOCK_SIZE/2 + 5) && (ban.x() >= bloc.x() + BLOCK_SIZE/2 - 5)) {
+
+        return res;
+    }
+//    return res;
 }
 
 #endif // COREGAME_H

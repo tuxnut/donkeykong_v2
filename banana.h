@@ -33,10 +33,7 @@ public:
         this->direction.setX(x);
         this->direction.setY(y);
     }
-//    inline const QPointF getCenter() {
-//        return QPointF (scenePos.x() + BANANA_SIZE/2, scenePos.y() + BANANA_SIZE/2);
-//        QPointF(sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 135)), sqrt(2) * (BANANA_SIZE / 2) * qSin(qDegreesToRadians(rotation() + 45)));
-//    }
+    inline qreal getSpeed() { return direction.length(); }
 
     bool thrownStatus() const;
 

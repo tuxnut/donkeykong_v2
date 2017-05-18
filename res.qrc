@@ -18,4 +18,7 @@
         <file>res/rasputin_boneym.mp3</file>
         <file>res/sunny_boneym.mp3</file>
     </qresource>
+    <qresource prefix="/demoloader">
+        <file>savedGames/saver.dat</file>
+    </qresource>
 </RCC>

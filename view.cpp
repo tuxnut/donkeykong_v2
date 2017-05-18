@@ -522,14 +522,14 @@ void View::startPlaying()
  * Basically we first check the position of the bananas and the edges of the scene - that's easy
  * Then we check with the block positions :
  *      - if the block is a bonus block, get the bonus then continues with the same direction
- *      - otherwise we check if the banana collides with the top/bottom sides or the left/right sides
+ *      - otherwise we (ie the controler) check if the banana collides with the top/bottom sides or the left/right sides
  * An effort has been made to put the vast majority of the calls to functions and methods in this function as
  * inline, letting the optimizer do his work (whether or not putting the lines codes directly in this method)
  */
 void View::collision()
 {
-    QElapsedTimer timer;
-    timer.start();
+//    QElapsedTimer timer;
+//    timer.start();
     // detection of collision with the edges of the playground
     foreach (Banana * ban, bananas) {
         // left edge
@@ -548,32 +548,7 @@ void View::collision()
         else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
                 Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
-                /*
-                // top / bottom block collision
-                if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
-                    ban->setDirection(ban->getDirectionToPointF().x(), -ban->getDirectionToPointF().y());
-                    if (brik->decPoints()) {
-                        blocks->removeFromGroup(brik);
-                        scene->removeItem(brik);
-                        delete brik;
-                        dk->setNbBlockDestroyed();
-                        incNbBlockDestrBoard();
-                    }
-                }
-                // right / left block collision
-                else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
-                    ban->setDirection(-ban->getDirectionToPointF().x(), ban->getDirectionToPointF().y());
-                    if (brik->decPoints()) {
-                        blocks->removeFromGroup(brik);
-                        scene->removeItem(brik);
-                        delete brik;
-                        dk->setNbBlockDestroyed();
-                        incNbBlockDestrBoard();
-                    }
-                }
-                */
-                QVector2D newdir = control->computeAngle(ban->scenePos(), brik->scenePos(), ban->getDirection());
-                ban->setDirection(newdir);
+                ban->setDirection(control->computeAngle(ban->scenePos(), brik->scenePos(), ban->getDirection()));
                 if (brik->decPoints()) {
                     blocks->removeFromGroup(brik);
                     scene->removeItem(brik);
@@ -612,8 +587,8 @@ void View::collision()
             }
         }
     }
-    qDebug()<<timer.nsecsElapsed();
-//     max : 100 microseconds (PC) /-/ 328,522 microseconds (laptop)
+//    qDebug()<<timer.nsecsElapsed();
+//     max : 200 microseconds (PC) /-/ 328,522 microseconds (laptop)
     return;
 }
 

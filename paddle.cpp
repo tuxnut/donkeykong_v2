@@ -10,10 +10,12 @@ void Paddle::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Right:
-        setPos(scenePos().x() + 3, scenePos().y());
+        if (x() < VIEW_WIDTH - PADDLE_WIDTH - 3)
+            setPos(scenePos().x() + 3, scenePos().y());
         break;
     case Qt::Key_Left:
-        setPos(scenePos().x() - 3, scenePos().y());
+        if (x() > 3)
+            setPos(scenePos().x() - 3, scenePos().y());
         break;
     default:
         break;

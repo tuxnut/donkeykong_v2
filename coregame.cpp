@@ -15,8 +15,7 @@ CoreGame::CoreGame(Model *model, View &view) :
 
     musicPlayer = new QMediaPlayer();
     musicPlayer->setMedia(QUrl("qrc:/sounds/res/rasputin_boneym.mp3"));
-    musicPlayer->play();
-    musicOn = true;
+    musicOn = false;
 }
 
 /**
@@ -162,6 +161,11 @@ QVector<blockSettings*> CoreGame::setupLevel()
 bool CoreGame::monitorLevel(QList<Banana *> bananas)
 {
     foreach (Banana * ban, bananas) {
+        if (ban->getSpeed() < BANANAS_SPEED - 1 || qAbs(ban->getDirection().y()) < MIN_Y) {
+            qDebug()<<"bug oO";
+            ban->setDirection(0, BANANAS_SPEED);
+        }
+
         if (ban->thrownStatus())
             return false;
     }
@@ -259,4 +263,58 @@ void CoreGame::closeCleanup()
 //    free(dk);
 //    delete dk;
     dk = nullptr;
+}
+
+const QVector2D CoreGame::computeAngle(QPointF ban, QPointF bloc, const QVector2D dir) const
+{
+    QVector2D res = dir;
+
+    // Working with the center of objects
+    ban.rx() += BANANA_SIZE/2;
+    ban.ry() += BANANA_SIZE/2;
+    bloc.rx() += BLOCK_SIZE/2;
+    bloc.ry() += BLOCK_SIZE/2;
+
+    // top / bottom  center collision
+    if ((ban.x() < bloc.x() + BLOCK_SIZE/2 - CORNER) && (ban.x() > bloc.x() - BLOCK_SIZE/2 + CORNER) && ((ban.y() > bloc.y() + BLOCK_SIZE/2) || (ban.y() < bloc.y() - BLOCK_SIZE/2))) {
+        res.setX(dir.x());
+        res.setY(-1 * dir.y());
+        qDebug()<<"0"<<res;
+        return res;
+    }
+    // right / left center collision
+    if ((ban.y() < bloc.y() + BLOCK_SIZE/2 - CORNER) && (ban.y() > bloc.y() - BLOCK_SIZE/2 + CORNER) && ((ban.x() > bloc.x() + BLOCK_SIZE/2) || (ban.x() < bloc.x() - BLOCK_SIZE/2))) {
+        res.setX(-1 * dir.x());
+        res.setY(dir.y());
+        qDebug()<<"1"<<res;
+        return res;
+    }
+
+    //bottom corners
+    if ((ban.y() >= bloc.y() + BLOCK_SIZE/2 - CORNER)) {
+        if (ban.x() <= bloc.x()) {              // left
+            res.setX(-qAbs(dir.y()));
+            res.setY(qAbs(dir.x()));
+        } else {                                // right
+            res.setX(qAbs(dir.y()));
+            res.setY(qAbs(dir.x()));
+        }
+//        res.setY((res.y() > MIN_Y)? res.y() : MIN_Y );
+        qDebug()<<"2"<<res;
+        return res;
+    }
+    //top corners
+    if ((ban.y() <= bloc.y() - BLOCK_SIZE/2 + CORNER)) {
+        if (ban.x() <= bloc.x()) {              // left
+            res.setX(-qAbs(dir.y()));
+            res.setY(-qAbs(dir.x()));
+        } else {                                // right
+            res.setX(qAbs(dir.y()));
+            res.setY(-qAbs(dir.x()));
+        }
+//        res.setY((res.y() < -MIN_Y)? res.y() : -MIN_Y );
+        qDebug()<<"3"<<res;
+        return res;
+    }
+//    return res;
 }

@@ -8,6 +8,7 @@
 #define BANANAS_SPEED 8 // in px per frame
 #define BANANA_SIZE 20
 #define INV_FPS 17      // 1/fps = 1/60 ~= 17ms
+#define MIN_Y 0.17365   // sin(10°)
 
 // display settings
 #define VIEW_HEIGHT 800
@@ -36,6 +37,7 @@
 #define MORE_BANANA_BONUS 1
 #define PADDLE_BONUS 2
 #define MORE_LIFE_BANANA_BONUS 3
+#define CORNER 3
 
 // paddle settings
 #define LIFESPAN_PADDLE 130000

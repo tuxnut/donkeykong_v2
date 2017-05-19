@@ -183,7 +183,7 @@ void CoreGame::gameCore(bool loadedGame)
 {
     // If the level is at least the second one
     if (dk->getScore() > 0 && (!loadedGame)) {
-        // check ig perfect level -> our condition to 'autosave' the game, and make a checkpoint
+        // check if perfect level -> our condition to 'autosave' the game, and make a checkpoint
         if (view.checkPerfectLevel()) {
             model->saveGameAuto(dk);
             dk->setLastCheckpoint(dk->getScore());

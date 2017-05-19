@@ -395,8 +395,13 @@ void View::cleanUpGame()
  */
 bool View::playerLoadCheckpoint()
 {
-    QString str = "Voulez-vous chargez le dernier checkpoint ("+QString::number(dk->getLastCheckpoint())+") ?";
-    const int reply = QMessageBox::question(this, "Game Over", str, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    QString str;
+    int reply;
+
+    if (dk->getLastCheckpoint() > 0) {
+        str = "Voulez-vous chargez le dernier checkpoint ("+QString::number(dk->getLastCheckpoint())+") ?";
+        reply = QMessageBox::question(this, "Game Over", str, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    }
 
     switch (reply) {
     case QMessageBox::Yes:
@@ -404,7 +409,7 @@ bool View::playerLoadCheckpoint()
     case QMessageBox::No:
         return false;
     default:
-        return true;
+        return false;
     }
 }
 
@@ -548,6 +553,30 @@ void View::collision()
         else if (!(ban->collidingItems().isEmpty())) {
             if (typeid(*(ban->collidingItems().first())) == typeid(Block)) {
                 Block * brik = dynamic_cast<Block*>(ban->collidingItems().first());
+
+//                // top / bottom block collision
+//                if (ban->pos().y() + BANANA_SIZE > brik->scenePos().y() + BLOCK_SIZE || ban->pos().y() < brik->scenePos().y()) {
+//                    ban->setDirection(ban->getDirectionToPointF().x(), -ban->getDirectionToPointF().y());
+//                    if (brik->decPoints()) {
+//                        blocks->removeFromGroup(brik);
+//                        scene->removeItem(brik);
+//                        delete brik;
+//                        dk->setNbBlockDestroyed();
+//                        incNbBlockDestrBoard();
+//                    }
+//                }
+//                // right / left block collision
+//                else if (ban->pos().x() < brik->scenePos().x() || ban->pos().x() + BANANA_SIZE > brik->scenePos().x() + BLOCK_SIZE) {
+//                    ban->setDirection(-ban->getDirectionToPointF().x(), ban->getDirectionToPointF().y());
+//                    if (brik->decPoints()) {
+//                        blocks->removeFromGroup(brik);
+//                        scene->removeItem(brik);
+//                        delete brik;
+//                        dk->setNbBlockDestroyed();
+//                        incNbBlockDestrBoard();
+//                    }
+//                }
+
                 ban->setDirection(control->computeAngle(ban->scenePos(), brik->scenePos(), ban->getDirection()));
                 if (brik->decPoints()) {
                     blocks->removeFromGroup(brik);
